@@ -15,6 +15,15 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.9", "3.11", "3.12"]
+        # ubuntu-latest is Ubuntu 26.04, for which setup-python has no
+        # Python 3.9 build; the 3.9 job stays on 24.04 while requires-python
+        # still admits it.
+        exclude:
+          - os: ubuntu-latest
+            python-version: "3.9"
+        include:
+          - os: ubuntu-24.04
+            python-version: "3.9"
 
     steps:
       - uses: actions/checkout@v4
