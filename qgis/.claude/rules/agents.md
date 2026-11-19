@@ -32,6 +32,16 @@ May not, unless the brief says so explicitly:
 A subagent that hits a denied permission reports it; it does not ask another agent to do it instead,
 and the main session does not route around a denial either.
 
+## Tool access is not write permission
+
+The `Writes` column in the table below is about the files an agent changes, not about the tools it
+holds. A read-only role may hold `Bash` and use it to run the project's tests, linters, type checks
+and build — exactly what the default scope above already allows — so that a finding can be reported
+as verified rather than merely suspected. It may not use that access to create, edit or delete
+anything outside the scratchpad, and test artefacts it leaves behind (caches, coverage files,
+`__pycache__`) are not a licence to touch source. A role whose `Writes` is `no` states findings; it
+never applies them.
+
 ## Briefing a subagent
 
 - One task, one subagent; state the goal, the files to look at, what is already ruled out, and what
@@ -47,11 +57,21 @@ and the main session does not route around a denial either.
 | Role            | Scope                                                                           | Writes |
 |-----------------|---------------------------------------------------------------------------------|--------|
 | explorer        | find where something lives, map call sites, summarise a module                   | no     |
-| reviewer        | correctness review of a diff or PR; findings with repro paths, no fixes          | no     |
+| reviewer        | correctness review of a diff or PR; findings with repro paths, no fixes          | no, runs tests |
 | tester          | run the suite, isolate a failing test, propose the minimal fix                   | scratch only |
 | implementer     | one bounded change in named files; runs tests; leaves the commit to the session | repo   |
 | machine-check   | which computer, repo state, snapshots (see `machines.md`)                       | no     |
 | doc-builder     | generate .docx/.xlsx/.pptx/.pdf from given content with author metadata set     | scratch/out |
+| manuscript-reviewer | independent read of a manuscript draft: claims vs evidence, arc, methods, citations; findings only, no score | no |
+
+These roles exist as agent definitions in `claude-home/agents/` of the sync folder, one file per
+role named after it (`reviewer.md`, `explorer.md`, ...). `Sync-ClaudeCode.ps1 -Setup` installs them
+into `~/.claude/agents/` on each computer, so in a local session they are **called**
+(`@agent-reviewer`, or by delegating to the role by name), not written again. Change a role by
+editing its file in `claude-home/agents/` and re-running `-Setup`; a copy edited under `~/.claude`
+is overwritten by the next setup. A role needed in one repository only, or in cloud sessions, is
+defined in that repository's `.claude/agents/` and takes precedence there over the installed one of
+the same name.
 
 Ask for the `reviewer` on anything that changes core calculations, data formats or packaging before
 it is committed; ask for `tester` when a suite is red and the cause is not obvious.
