@@ -1,6 +1,6 @@
 # GeoSnag
 
-<img src="https://raw.githubusercontent.com/igorpawelec/geosnag/main/qgis/geosnag_plugin/icon.png" alt="GeoSnag plugin icon" align="right" width="96"/>
+<img src="geosnag_plugin/icon.png" alt="GeoSnag plugin icon: a Q around the geosnag mark, a standing dead tree marked by a point at its top" align="right" width="96"/>
 
 [![qgis-tests](https://github.com/igorpawelec/geosnag/actions/workflows/qgis-tests.yml/badge.svg)](https://github.com/igorpawelec/geosnag/actions/workflows/qgis-tests.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
