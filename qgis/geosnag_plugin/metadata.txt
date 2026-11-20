@@ -1,0 +1,141 @@
+[general]
+name=GeoSnag
+qgisMinimumVersion=3.28
+qgisMaximumVersion=4.99
+supportsQt6=True
+description=Standing dead trees from aerial orthophotos: one point per tree, then the crown grown around each point.
+version=0.5.1
+author=Igor Pawelec
+email=igor.pawelec@urk.edu.pl
+about=EN: Finds standing dead trees on an aerial orthophoto (RGB+NIR, colour infrared or RGB, best at about 0.25 m) and writes one point per tree with a confidence; a second tool grows the crown polygon around each point, from the detected points or from your own. No tree tops, height model or training data are needed. The detector splits the image into adaptels (superpixels), describes each by colour, contrast and texture and scores it with a random forest trained on thousands of verified dead trees in Polish pine and spruce stands (Pawelec et al. 2026). The crowns are grown by seeded region growing on NDVI and lightness. Optional stand polygons and a canopy height model remove roads and bare ground. The models are downloaded on first use; the plugin installs its Python dependencies into its own folder. PL: Znajduje stojace martwe drzewa na ortofotomapie lotniczej (RGB+NIR, CIR lub RGB, najlepiej ok. 0,25 m) i zapisuje po jednym punkcie na drzewo z ocena pewnosci; drugie narzedzie rozrasta korone wokol kazdego punktu, z wykrytych punktow lub z wlasnych. Nie wymaga wierzcholkow, modelu wysokosci ani danych treningowych. Detektor dzieli obraz na adaptele (superpiksele), opisuje kazdy barwa, kontrastem i tekstura i ocenia lasem losowym uczonym na tysiacach zweryfikowanych martwych drzew w polskich drzewostanach sosnowych i swierkowych (Pawelec i in. 2026). Korony rosna przez rozrost obszarow z ziaren na NDVI i jasnosci. Opcjonalne wydzielenia i model wysokosci koron usuwaja drogi i grunt. Modele pobierane sa przy pierwszym uzyciu; wtyczka instaluje swoje zaleznosci Pythona do wlasnego folderu.
+icon=icon.png
+homepage=https://github.com/igorpawelec/qgis-geosnag
+tracker=https://github.com/igorpawelec/qgis-geosnag/issues
+repository=https://github.com/igorpawelec/qgis-geosnag
+category=Analysis
+tags=raster,standing dead trees,snags,tree mortality,forestry,remote sensing,orthophoto,superpixels,delineation,random forest,region growing
+experimental=True
+deprecated=False
+changelog=0.5.1
+    Wording after the author's review: adaptels are superpixels, not a
+    segmentation; the plugin description in English and Polish; own point
+    layers highlighted as input to Grow crowns. No change in the tools.
+    0.5.0
+    A release for people: every option of both dialogs now says what
+    changing it does, in its label and in its help text; the help pages
+    explain the method, the outputs and what to expect; the README and a
+    documentation page with figures. No change in what the tools compute
+    since 0.4.15 (models assets-v3, pygeosnag 0.5.1).
+    0.4.15
+    Models assets-v3 corrected (pygeosnag 0.5.1): the RGB forest is the
+    assets-v1 one again, whose precision on an independent test area without NIR is twice
+    that of the v2 forest at the same recall (30% vs 16% at 60% recall);
+    there is no object forest for RGB after all, so the p_object cut is
+    RGB+NIR only. RGB operating point 0.6 unchanged. Bundles pygeosnag 0.5.1.
+    0.4.14
+    Models assets-v3 (pygeosnag 0.5.0): an object forest for RGB orthophotos,
+    so p_object is filled and the p_object cut works without a NIR band
+    (on an independent test area without NIR 0.3 lifts precision from 16% to 27% at two
+    thirds of the recall; on dark spruce stands it separates nothing, so
+    it stays optional), and an operating point per band mode: 0.7 for
+    RGB+NIR and CIR, 0.6 for RGB. Threshold 0 (new default) takes the band
+    mode's own point. Bundles pygeosnag 0.5.0.
+    0.4.13
+    Rasters without a NIR band grow crowns exactly as before 0.4.9 again:
+    the within-reach rule was applied to the CIELAB fallback in 0.4.9 without
+    a benchmark and over-grew dark RGB scenes into 20-px discs (SNP_21:
+    median crown 37 m2 against 14 m2 before). pygeosnag 0.4.3 rule "auto"
+    (new default in Advanced) pairs reach with NDVI + lightness and the
+    partition with CIELAB. Bundles pygeosnag 0.4.3.
+    0.4.12
+    Declares qgisMaximumVersion 4.99 and supportsQt6: without them QGIS 4
+    lists the plugin as incompatible (designed for 3.28-3.99) at the next
+    start, although it ran fine when installed from the zip. No code change.
+    0.4.11
+    Grow crowns with band mode auto read a 3-band CIR orthophoto (NIR, R, G)
+    as RGB and grew on weighted CIELAB instead of NDVI + lightness (seen on
+    Ramsowo: "mode rgb ... space lab_w"). pygeosnag 0.4.2 shares the band
+    sniff of Detect with Grow; the log now says "mode cir (auto: band 2 is
+    the darkest ...)" for such a raster. Bundles pygeosnag 0.4.2.
+    0.4.10
+    Grow crowns: the tolerance now tapers with the distance from the seed
+    (pygeosnag 0.4.1): 28 at the seed, 12 at the radius on NDVI + lightness.
+    A flat tolerance could not serve both dense bark-beetle clusters (their
+    bleached crowns want 25-30 near the seed) and sparse stands (anything
+    above 15 at the radius spills into shadow). On 1200 verified crowns of
+    8 sites: median IoU 0.70, 79% above 0.5 (0.4.9: 0.65, 72%); on the
+    Gizycko clusters 0.56 (0.4.9: 0.48). New Advanced field: tolerance at
+    the radius. Bundles pygeosnag 0.4.1.
+    0.4.9
+    Grow crowns gets a new default recipe (pygeosnag 0.4.0): the points grow
+    on 100 x NDVI and CIELAB lightness (tolerance 20; weighted CIELAB with
+    no NIR band) with pygeosnag's within-reach kernel, where a pixel goes to
+    the seed within the radius and tolerance with the lowest path cost, in
+    place of pygeoadaptels' global partition cut afterwards. On 1200
+    verified crowns of 8 sites: median IoU 0.65, 72% of crowns above 0.5,
+    against 0.53 and 54% before; on Gizycko's dense clusters 0.48 against
+    0.34. New Advanced options: Feature space (auto, ndvi_L, lab_w, lab,
+    raw) and Assignment rule (reach, partition); tolerance 0 and empty
+    weights take the values of the chosen space. Bundles pygeosnag 0.4.0.
+    0.4.8
+    Grow crowns works tile by tile around the points (pygeosnag 0.3.4): no
+    temporary CIELAB file, memory bounded by one tile, progress per tile,
+    cancel works. A 796-megapixel orthophoto that failed writing the
+    temporary file on the system drive now runs through. Bundles
+    pygeosnag 0.3.4, pygeoadaptels 0.10.4.
+    0.4.7
+    Results are styled by Processing itself from QML files shipped with the
+    plugin (RenderingStyles), not by plugin post-processors running on the
+    GUI thread when the task completes -- where QGIS crashed with an access
+    violation after Grow crowns on a 150-megapixel orthophoto (the output
+    file was complete). No plugin code runs at task completion any more.
+    0.4.6
+    The bundled packages win over an older copy another plugin made
+    importable first (GeoAdaptels + GeoPalette loads before this plugin and
+    put its pygeoadaptels 0.10.3 on the path, so the 0.10.4 bundled here --
+    Grow crowns no longer taking hours -- never ran). The log names the
+    folder every package is executed from. Bundles pygeoadaptels 0.10.4.
+    0.4.5
+    Radiometry is off by default and labelled a rescue: on 200 scenes it
+    saved 27 and broke 17. Bundles pygeosnag 0.3.3.
+    0.4.4
+    Radiometry (Advanced, default auto): a hazy or flat orthophoto is mapped
+    per band onto the training range before the adaptels are built; on such scenes
+    the models saw nothing at all before. Bundles pygeosnag 0.3.2.
+    0.4.3
+    The dependency check no longer takes find_spec's word for it: it clears
+    the import caches, and a package that imports is present. Every session
+    used to re-run pip for scikit-learn and joblib that sat in libs/ and
+    imported fine. When pip is still needed the log first says why each
+    package was not importable.
+    0.4.2
+    A run now names the package versions it actually executes and refuses
+    to run when the plugin was updated under a running QGIS (the session
+    keeps the previous code in memory until a restart; a 0.4.1 session
+    that still ran pygeosnag 0.3.0 read a CIR orthophoto as RGB).
+    0.4.1
+    Band mode auto now tells a CIR orthophoto from an RGB one (band 2 the
+    darkest over the sampled pixels = NIR, R, G) and a NIR-first 4-band
+    stack from R, G, B, NIR; the first log line names the decision. A
+    CIR raster run as RGB found almost nothing. The packages line no
+    longer reports the bundled copies as installed. Bundles pygeosnag 0.3.1.
+    0.4.0
+    Models assets-v3 (pygeosnag 0.3.0): whole-crown labels from ten sites;
+    the RGB+NIR and CIR models score spectral means standardised within
+    the scene (a first pass over 16 tiles; "Scene normalisation" under
+    Advanced, leave it on auto); the dialog's threshold defaults to the
+    models' operating point 0.7; an optional p_object cut under Advanced,
+    the object forest now transferring to unseen scenes. The log names the
+    models and their operating point. Bundles pygeosnag 0.3.0.
+    0.3.4
+    Result styling no longer leaks a post-processor per run: QGIS takes
+    ownership of it, so the plugin keeps its own reference only on bindings
+    that do not (verified against QGIS 3.44). Unrelated to the QGIS crash in
+    on_complete, which was measured and is not caused by this plugin.
+    0.3.3 -- the height gate takes the maximum within a radius (3 m) and defaults to 3 m: a ground separator, never crown evidence; radius under Advanced. Bundles pygeosnag 0.2.1.
+    0.3.2 -- height gate: an optional canopy height model (or a surface and a terrain model under Advanced) drops points below 5 m -- bare ground, roads and stumps -- and writes height_m. Bundles pygeosnag 0.2.1.
+    0.3.1 -- fixed a crash (access violation in on_complete) after a run on a full orthophoto with the probability raster requested: the raster was contrast-stretched with a cumulative cut, a full-pixel scan on the GUI thread while the task was being torn down. The probability raster now gets a fixed 0-1 pseudocolour and nothing is read in the completion handler.
+    0.3.0 -- the product is a point per dead tree: "Detect dead trees" writes points (centroid of the merged adaptels, 3 m duplicate suppression), "Grow crowns" grows them with pygeoadaptels' seeded growing and the crown recipe. Score, extract and adapt are gone from the toolbox. Binary dependencies go into the plugin's own libs folder, never the user site. Bundles pygeosnag 0.2.0.
+    0.1.2 -- a reinstalled zip no longer keeps running the previous zip's package code; a failed model download names the cache folder to copy the models into.
+    0.1.1 -- five things on the Detect dialog, the rest under Advanced; the local models folder is remembered.
+    0.1.0 -- first release.

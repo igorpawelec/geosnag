@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+dist/
+geosnag_plugin/vendor/
+geosnag_plugin/libs/
+.pytest_cache/
