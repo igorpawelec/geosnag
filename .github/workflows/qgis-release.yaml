@@ -1,16 +1,18 @@
-# Build the installable plugin zip on every version tag and attach it to the
-# release, so an operator downloads one file from Releases and installs it.
+# Build the installable plugin zip on every plugin version tag (qgis-vX.Y.Z)
+# and attach it to the release, so an operator downloads one file from
+# Releases and installs it.
 #
-# The build vendors the three pure-Python packages from checkouts *beside*
-# this repository, which is why they are cloned first into the parent
+# The build vendors three pure-Python packages: pygeosnag from python/ of the
+# tagged commit, and pygeoadaptels and pygeopalette from checkouts *beside*
+# this repository, which is why those two are cloned first into the parent
 # directory, at their default branches. Pin them here if a release should be
 # tied to specific package versions.
-name: release
+name: qgis-release
 
 on:
   push:
     tags:
-      - "v*"
+      - "qgis-v*"
 
 permissions:
   contents: write
@@ -19,16 +21,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the plugin
+      - name: Check out this repository (the plugin and pygeosnag)
         uses: actions/checkout@v4
         with:
-          path: qgis-geosnag
-
-      - name: Check out pygeosnag (vendored into the zip)
-        uses: actions/checkout@v4
-        with:
-          repository: igorpawelec/pygeosnag
-          path: pygeosnag
+          path: geosnag
 
       - name: Check out pygeoadaptels (vendored into the zip)
         uses: actions/checkout@v4
@@ -36,22 +32,22 @@ jobs:
           repository: igorpawelec/pygeoadaptels
           path: pygeoadaptels
 
-      - name: Check out pygeopalette (vendored into the zip)
+      - name: Check out geopalette (pygeopalette is vendored into the zip)
         uses: actions/checkout@v4
         with:
-          repository: igorpawelec/pygeopalette
-          path: pygeopalette
+          repository: igorpawelec/geopalette
+          path: geopalette
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Build the zip
-        working-directory: qgis-geosnag
+        working-directory: geosnag/qgis
         run: python build_zip.py
 
       - name: Check the zip really carries the vendored packages
-        working-directory: qgis-geosnag
+        working-directory: geosnag/qgis
         run: |
           python - <<'PY'
           import glob, zipfile
@@ -67,5 +63,5 @@ jobs:
       - name: Attach the zip to the release
         uses: softprops/action-gh-release@v2
         with:
-          files: qgis-geosnag/dist/*.zip
+          files: geosnag/qgis/dist/*.zip
           generate_release_notes: true

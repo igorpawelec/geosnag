@@ -1,10 +1,19 @@
-name: tests
+# Tests of the pygeosnag package in python/. Runs only when that folder or
+# this file changes; the QGIS plugin in qgis/ has its own workflow,
+# qgis-tests.yml.
+name: python-tests
 
 on:
   push:
     branches: [main]
+    paths: ["python/**", ".github/workflows/python-tests.yml"]
   pull_request:
+    paths: ["python/**", ".github/workflows/python-tests.yml"]
   workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: python
 
 jobs:
   test:
@@ -35,12 +44,13 @@ jobs:
       - name: Install
         # pygeoadaptels and pygeopalette are not on PyPI, so they come from
         # their repositories first; pip then sees the two dependencies of
-        # pyproject as satisfied. Everything else ships wheels for all three
+        # pyproject as satisfied. pygeopalette lives in python/ of the
+        # geopalette repository. Everything else ships wheels for all three
         # platforms. python -m pip, so the install lands in the interpreter
         # that runs the tests.
         run: |
           python -m pip install --upgrade pip
-          python -m pip install "git+https://github.com/igorpawelec/pygeoadaptels.git" "git+https://github.com/igorpawelec/pygeopalette.git"
+          python -m pip install "git+https://github.com/igorpawelec/pygeoadaptels.git" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python"
           python -m pip install -e ".[all]"
           python -m pip install pytest pyflakes
 

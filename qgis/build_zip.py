@@ -2,7 +2,9 @@
 
 A QGIS plugin zip has the plugin folder at its top level, so this zips
 ``geosnag_plugin/`` (excluding bytecode) after refreshing ``vendor/`` with
-the three pure-Python packages from the sibling checkouts. Install via
+three pure-Python packages: pygeosnag from ``python/`` of this repository,
+and pygeoadaptels and pygeopalette from the ``pygeoadaptels`` and
+``geopalette`` checkouts beside it. Install via
 QGIS -> Plugins -> Manage and Install Plugins -> Install from ZIP.
 
     python build_zip.py            # -> dist/geosnag_plugin-<version>.zip
@@ -13,14 +15,16 @@ import shutil
 import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.dirname(HERE)            # the geosnag repository: python/ and qgis/
+BESIDE = os.path.dirname(REPO)          # the folder that holds the checkouts
 PLUGIN = "geosnag_plugin"
 SKIP_DIRS = {"__pycache__", "libs"}     # libs/ is what deps.py installs on the target machine
 SKIP_EXT = {".pyc", ".pyo"}
 
 VENDOR_SRC = {
-    "pygeosnag": os.path.join(HERE, "..", "pygeosnag", "pygeosnag"),
-    "pygeoadaptels": os.path.join(HERE, "..", "pygeoadaptels", "pygeoadaptels"),
-    "pygeopalette": os.path.join(HERE, "..", "pygeopalette", "pygeopalette"),
+    "pygeosnag": os.path.join(REPO, "python", "pygeosnag"),
+    "pygeoadaptels": os.path.join(BESIDE, "pygeoadaptels", "pygeoadaptels"),
+    "pygeopalette": os.path.join(BESIDE, "geopalette", "python", "pygeopalette"),
 }
 
 
@@ -48,8 +52,9 @@ def vendor():
     for name, src in VENDOR_SRC.items():
         src = os.path.abspath(src)
         if not os.path.isdir(src):
-            raise SystemExit(f"Cannot vendor {name}: {src} not found. The build expects the "
-                             f"package checkouts beside this repository.")
+            raise SystemExit(f"Cannot vendor {name}: {src} not found. The build expects "
+                             f"pygeosnag in python/ of this repository and the pygeoadaptels "
+                             f"and geopalette checkouts beside the repository.")
         shutil.copytree(src, os.path.join(dest_root, name),
                         ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo"))
         versions[name] = _pkg_version(src)

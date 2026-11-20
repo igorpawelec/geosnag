@@ -1,0 +1,11 @@
+# Per-package ignore rules live in python/.gitignore and qgis/.gitignore.
+
+# Local Claude Code files
+CLAUDE.local.md
+.claude/settings.local.json
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
