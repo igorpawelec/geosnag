@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.2 — the package and its models live in the geosnag repository
+
+- The models are downloaded from the releases of `igorpawelec/geosnag`, where
+  the package now lives in `python/` next to the QGIS plugin. The files of
+  assets-v3 are the ones published before, with the same checksums in the
+  manifest, so a cache filled by 0.5.1 is used as it is and nothing changes
+  in what `detect` and `grow_crowns` compute.
+- The install command in the README names the three repositories: none of
+  pygeoadaptels, pygeopalette and pygeosnag is on PyPI.
+
 ## 0.5.1 — assets-v3 corrected: the RGB forest is the assets-v1 one again
 
 - Documentation and manifest only; the code of 0.5.0 is unchanged. The

@@ -15,7 +15,7 @@ import os
 import urllib.request
 
 RELEASE = "assets-v3"
-URL = f"https://github.com/igorpawelec/pygeosnag/releases/download/{RELEASE}/{{name}}"
+URL = f"https://github.com/igorpawelec/geosnag/releases/download/{RELEASE}/{{name}}"
 KEYS = {"rgbn": "segments_rgbn", "cir": "segments_cir", "rgb": "segments_rgb", "objects": "objects_rgbn"}
 # object forests are keyed per band mode in the manifest: objects_rgbn, objects_rgb, objects_cir
 
@@ -56,7 +56,7 @@ def _fetch(name, quiet=False):
             pass
         raise RuntimeError(
             f"pygeosnag: could not download {name} from {url} ({e}). The models are release "
-            f"assets of the pygeosnag repository; if the release is not published yet or the "
+            f"assets of the geosnag repository; if the release is not published yet or the "
             f"machine is offline, set PYGEOSNAG_ASSETS to a folder that holds manifest.json and "
             f"the model files (in QGIS: the 'Local models folder' parameter).") from e
     os.replace(path + ".part", path)

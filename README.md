@@ -13,7 +13,7 @@ An aerial orthophoto goes in (RGB+NIR, colour infrared or RGB, best at about 0.2
 | | Part | Latest | Install |
 |---|---|---|---|
 | Python | [`pygeosnag`](python/) | ![latest python tag](https://img.shields.io/github/v/tag/igorpawelec/geosnag?filter=python-v*&label=) | `pip install --no-deps "git+https://github.com/igorpawelec/geosnag.git#subdirectory=python"`, after its two dependencies ([details](python/README.md#install)) |
-| QGIS | [GeoSnag plugin](qgis/) | ![latest qgis tag](https://img.shields.io/github/v/tag/igorpawelec/geosnag?filter=qgis-v*&label=) | `geosnag_plugin-<version>.zip` from the [releases page](https://github.com/igorpawelec/qgis-geosnag/releases), then *Plugins → Manage and Install Plugins → Install from ZIP* |
+| QGIS | [GeoSnag plugin](qgis/) | ![latest qgis tag](https://img.shields.io/github/v/tag/igorpawelec/geosnag?filter=qgis-v*&label=) | `geosnag_plugin-<version>.zip` from the [releases page](https://github.com/igorpawelec/geosnag/releases), then *Plugins → Manage and Install Plugins → Install from ZIP* |
 
 The plugin carries the package: its zip is built with `pygeosnag` from `python/` of the same commit ([qgis-tests workflow](.github/workflows/qgis-tests.yml)), so the two cannot drift apart.
 
@@ -67,7 +67,7 @@ What the detector finds and misses, measured with the site under test never seen
 
 Each part is versioned and tagged on its own: `python-vX.Y.Z` and `qgis-vX.Y.Z`. The tags up to `python-v0.5.1` and `qgis-v0.5.1` were carried over, with the full history, from the two repositories the parts used to live in, `pygeosnag` and `qgis-geosnag`. A `qgis-v` tag builds the plugin zip and attaches it to a release.
 
-The models are not in the repository. They are release assets (`assets-v1` to `assets-v3`) of the [pygeosnag](https://github.com/igorpawelec/pygeosnag/releases) repository and are downloaded on first use.
+The models are not in the source tree. They are assets of the releases [`assets-v1` to `assets-v3`](https://github.com/igorpawelec/geosnag/releases) of this repository and are downloaded on first use.
 
 ## Citation
 
