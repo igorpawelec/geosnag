@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite the method paper listed under
+  references and the part you used. Each part carries its own citation
+  metadata with its version: python/CITATION.cff for pygeosnag and
+  qgis/CITATION.cff for the GeoSnag plugin. This file names the repository
+  as a whole.
+title: "geosnag: standing dead trees on aerial orthophotos, a Python package and a QGIS plugin"
+type: software
+license: GPL-3.0-or-later
+repository-code: "https://github.com/igorpawelec/geosnag"
+authors:
+  - family-names: Pawelec
+    given-names: Igor
+    affiliation: "University of Agriculture in Kraków, Poland"
+    email: igor.pawelec@urk.edu.pl
+    orcid: "https://orcid.org/0009-0005-9798-3596"
+keywords:
+  - standing dead trees
+  - snags
+  - deadwood
+  - tree detection
+  - orthophoto
+  - forestry
+  - remote sensing
+  - QGIS
+references:
+  - type: article
+    title: "Evaluating superpixel algorithms for standing dead tree delineation using aerial orthoimagery"
+    authors:
+      - family-names: Pawelec
+        given-names: Igor
+      - family-names: Hawryło
+        given-names: Paweł
+      - family-names: Netzel
+        given-names: Paweł
+      - family-names: Socha
+        given-names: Jarosław
+    journal: "International Journal of Applied Earth Observation and Geoinformation"
+    volume: 147
+    start: 105180
+    year: 2026
+    doi: "10.1016/j.jag.2026.105180"
