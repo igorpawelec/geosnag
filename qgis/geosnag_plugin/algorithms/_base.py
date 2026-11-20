@@ -138,7 +138,7 @@ def set_assets_dir(path, feedback=None):
         if feedback is not None:
             feedback.pushInfo(f"Models from {path}")
     elif feedback is not None:
-        feedback.pushInfo("Models from the download cache (the pygeosnag GitHub release); "
+        feedback.pushInfo("Models from the download cache (the geosnag GitHub release); "
                           "give a local models folder under Advanced if that fails.")
     return path
 
@@ -177,7 +177,7 @@ def package_error(e):
     """A pygeosnag RuntimeError as a readable Processing error."""
     msg = str(e)
     if any(k in msg for k in ("could not download", "HTTP Error", "URLError", "urlopen", "Not Found")):
-        msg += ("\n\nThe models could not be downloaded (the pygeosnag GitHub release is not published "
+        msg += ("\n\nThe models could not be downloaded (the geosnag GitHub release is not published "
                 "yet, or the machine is offline). Copy manifest.json and the model files into "
                 f"{os.path.join(os.path.expanduser('~'), '.cache', 'pygeosnag', _release())} -- that is "
                 "where pygeosnag looks without any setting -- or open Advanced and set 'Local models "

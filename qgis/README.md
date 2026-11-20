@@ -46,7 +46,7 @@ flowchart LR
 
 ## Quick start
 
-1. Download `geosnag_plugin-<version>.zip` from the [releases page](https://github.com/igorpawelec/qgis-geosnag/releases) and install it in QGIS: *Plugins → Manage and Install Plugins → Install from ZIP*. QGIS 3.28 or newer, QGIS 4 included.
+1. Download `geosnag_plugin-<version>.zip` from the [releases page](https://github.com/igorpawelec/geosnag/releases) and install it in QGIS: *Plugins → Manage and Install Plugins → Install from ZIP*. QGIS 3.28 or newer, QGIS 4 included.
 2. The first run installs the scientific Python packages the plugin needs into its own folder and downloads the models (60–145 MB per band mode). Both happen once; a machine without internet can be given a local models folder under *Advanced*.
 3. *Processing Toolbox → GeoSnag → Detect dead trees*: choose the orthophoto, leave *Band mode* on auto (the log says what it read) and the threshold at 0, and run. Add stand polygons or a canopy height model if you have them; they remove roads, fields and bare ground from the result.
 4. *Grow crowns* with the same orthophoto and the points. The crowns come out styled, with their area in square metres. Your own point layer works here too: mark the trees you know and let the tool draw their crowns.
@@ -71,7 +71,7 @@ The models were trained on aerial orthophotos of Polish lowland forests with dea
 
 > The study used data shared by the Task Force for Developing and Pilot Implementing a System for Monitoring and Detecting Dying and Dead Trees Using Geoinformatics Techniques in the Polish State Forests, established under Directive No. 48 of the General Director of State Forests, dated July 15, 2021. We extend special thanks to Mr. Kamil Onoszko for his invaluable support and contributions to this research.
 
-The models are published as release assets of [pygeosnag](https://github.com/igorpawelec/pygeosnag) and downloaded on first use. The plugin bundles the three Python packages the method is made of: [pygeosnag](../python/) (detection and crowns, in `python/` of this repository), [pygeoadaptels](https://github.com/igorpawelec/pygeoadaptels) (adaptels and seeded region growing) and [pygeopalette](https://github.com/igorpawelec/geopalette) (colour spaces).
+The models are published as [release assets](https://github.com/igorpawelec/geosnag/releases/tag/assets-v3) of this repository and downloaded on first use. The plugin bundles the three Python packages the method is made of: [pygeosnag](../python/) (detection and crowns, in `python/` of this repository), [pygeoadaptels](https://github.com/igorpawelec/pygeoadaptels) (adaptels and seeded region growing) and [pygeopalette](https://github.com/igorpawelec/geopalette) (colour spaces).
 
 ## Citing
 
