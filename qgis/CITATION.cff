@@ -8,7 +8,7 @@ authors:
     affiliation: "University of Agriculture in Kraków, Poland"
     email: igor.pawelec@urk.edu.pl
     orcid: "https://orcid.org/0009-0005-9798-3596"
-repository-code: "https://github.com/igorpawelec/qgis-geosnag"
+repository-code: "https://github.com/igorpawelec/geosnag"
 license: GPL-3.0-or-later
 version: "0.5.1"
 date-released: "2026-09-08"
@@ -26,4 +26,4 @@ references:
     authors:
       - family-names: Pawelec
         given-names: Igor
-    repository-code: "https://github.com/igorpawelec/pygeosnag"
+    repository-code: "https://github.com/igorpawelec/geosnag"

@@ -5,8 +5,8 @@ Contributions are welcome! Here's how to get started.
 ## Setup
 
 ```bash
-git clone https://github.com/igorpawelec/pygeosnag.git
-cd pygeosnag
+git clone https://github.com/igorpawelec/geosnag.git
+cd geosnag/python
 conda env create -f environment.yaml
 conda activate pygeosnag
 pip install -e . --no-deps
@@ -63,7 +63,7 @@ change was meant to do. The matrix is the part that disagrees.
    `gh run list` is nicer if the GitHub CLI is installed; it is not
    everywhere, and the curl form needs nothing but a public repo.
 6. Only then tag and push the tag:
-   `git tag -a vX.Y.Z -m "..." && git push --tags`
+   `git tag -a python-vX.Y.Z -m "..." && git push --tags` (tags carry the package prefix: `python-v` here, `qgis-v` for the plugin)
 7. If this release changes what the package produces, bump the pin in
    [rgeoadaptels](https://github.com/igorpawelec/rgeoadaptels)'s
    `.github/workflows/R-CMD-check.yaml`, which installs `pygeosnag` from a tag.

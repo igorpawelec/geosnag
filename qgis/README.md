@@ -1,10 +1,10 @@
 # GeoSnag
 
-<img src="https://raw.githubusercontent.com/igorpawelec/qgis-geosnag/main/geosnag_plugin/icon.png" align="right" width="96"/>
+<img src="https://raw.githubusercontent.com/igorpawelec/geosnag/main/qgis/geosnag_plugin/icon.png" alt="GeoSnag plugin icon" align="right" width="96"/>
 
-[![tests](https://github.com/igorpawelec/qgis-geosnag/actions/workflows/tests.yml/badge.svg)](https://github.com/igorpawelec/qgis-geosnag/actions/workflows/tests.yml)
+[![qgis-tests](https://github.com/igorpawelec/geosnag/actions/workflows/qgis-tests.yml/badge.svg)](https://github.com/igorpawelec/geosnag/actions/workflows/qgis-tests.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/igorpawelec/qgis-geosnag)](https://github.com/igorpawelec/qgis-geosnag/releases)
+[![Release](https://img.shields.io/github/v/tag/igorpawelec/geosnag?filter=qgis-v*&label=release)](https://github.com/igorpawelec/geosnag/releases)
 
 **Standing dead trees from aerial orthophotos, in QGIS: one point per tree, then the crown grown around each point.**
 
@@ -71,7 +71,7 @@ The models were trained on aerial orthophotos of Polish lowland forests with dea
 
 > The study used data shared by the Task Force for Developing and Pilot Implementing a System for Monitoring and Detecting Dying and Dead Trees Using Geoinformatics Techniques in the Polish State Forests, established under Directive No. 48 of the General Director of State Forests, dated July 15, 2021. We extend special thanks to Mr. Kamil Onoszko for his invaluable support and contributions to this research.
 
-The models are published as release assets of [pygeosnag](https://github.com/igorpawelec/pygeosnag) and downloaded on first use. The plugin bundles the three Python packages the method is made of: [pygeosnag](https://github.com/igorpawelec/pygeosnag) (detection and crowns), [pygeoadaptels](https://github.com/igorpawelec/pygeoadaptels) (adaptels and seeded region growing) and [pygeopalette](https://github.com/igorpawelec/pygeopalette) (colour spaces).
+The models are published as release assets of [pygeosnag](https://github.com/igorpawelec/pygeosnag) and downloaded on first use. The plugin bundles the three Python packages the method is made of: [pygeosnag](../python/) (detection and crowns, in `python/` of this repository), [pygeoadaptels](https://github.com/igorpawelec/pygeoadaptels) (adaptels and seeded region growing) and [pygeopalette](https://github.com/igorpawelec/geopalette) (colour spaces).
 
 ## Citing
 
@@ -79,7 +79,7 @@ If GeoSnag is useful in your work, please cite the method paper and the software
 
 > Pawelec, I., Hawryło, P., Netzel, P., & Socha, J. (2026). Evaluating superpixel algorithms for standing dead tree delineation using aerial orthoimagery. *International Journal of Applied Earth Observation and Geoinformation*, 147, 105180. https://doi.org/10.1016/j.jag.2026.105180
 
-> Pawelec, I. (2026). GeoSnag: standing dead trees from aerial orthophotos, a QGIS plugin. https://github.com/igorpawelec/qgis-geosnag
+> Pawelec, I. (2026). GeoSnag: standing dead trees from aerial orthophotos, a QGIS plugin. https://github.com/igorpawelec/geosnag
 
 The building blocks: adaptels follow Achanta, R., Marquez-Neila, P., Fua, P., & Süsstrunk, S. (2018), *Scale-Adaptive Superpixels*, Color and Imaging Conference (CIC26); the seeded region growing is an image foresting transform (Falcão, A. X., Stolfi, J., & Lotufo, R. A., 2004, *The image foresting transform: theory, algorithms, and applications*, IEEE Transactions on Pattern Analysis and Machine Intelligence, 26(1)); the colour conversions follow CIE 15:2004.
 

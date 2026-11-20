@@ -1,9 +1,9 @@
 # pygeosnag
 
-<img src="https://raw.githubusercontent.com/igorpawelec/pygeosnag/main/www/pygeosnag.png" align="right" width="200"/>
+<img src="https://raw.githubusercontent.com/igorpawelec/geosnag/main/python/www/pygeosnag.png" alt="pygeosnag logo" align="right" width="200"/>
 
-[![tests](https://github.com/igorpawelec/pygeosnag/actions/workflows/tests.yml/badge.svg)](https://github.com/igorpawelec/pygeosnag/actions/workflows/tests.yml)
-[![Release](https://img.shields.io/github/v/release/igorpawelec/pygeosnag?filter=v*)](https://github.com/igorpawelec/pygeosnag/releases)
+[![python-tests](https://github.com/igorpawelec/geosnag/actions/workflows/python-tests.yml/badge.svg)](https://github.com/igorpawelec/geosnag/actions/workflows/python-tests.yml)
+[![Release](https://img.shields.io/github/v/tag/igorpawelec/geosnag?filter=python-v*&label=release)](https://github.com/igorpawelec/geosnag/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 **Standing dead trees on aerial orthophotos, as points — and the crowns grown from them.**
@@ -14,10 +14,12 @@ A raster goes in, one point per dead tree comes out, with a confidence. No seeds
 
 ```bash
 conda install -c conda-forge numpy numba scipy scikit-learn joblib rasterio fiona shapely
-pip install pygeoadaptels pygeopalette pygeosnag --no-deps
+pip install --no-deps "git+https://github.com/igorpawelec/pygeoadaptels.git" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python" "git+https://github.com/igorpawelec/geosnag.git#subdirectory=python"
 ```
 
-The models are release assets, not part of the wheel. They are downloaded on first use into `~/.cache/pygeosnag/` and verified against a manifest. Set `PYGEOSNAG_ASSETS` to a directory that already holds them to work offline.
+None of the three packages is on PyPI; they install from their repositories. pygeosnag lives in `python/` of this repository, next to the QGIS plugin in [`qgis/`](../qgis/).
+
+The models are release assets of the [pygeosnag](https://github.com/igorpawelec/pygeosnag/releases) repository, where the package lived before, not part of the wheel. They are downloaded on first use into `~/.cache/pygeosnag/` and verified against a manifest. Set `PYGEOSNAG_ASSETS` to a directory that already holds them to work offline.
 
 Since assets-v2 the RGB+NIR and CIR forests are trained on spectral means standardised within each scene, and `detect` repeats that on your raster: a first pass over 16 tiles gathers the scene's medians and MADs of the five means, then every tile is scored on the standardised values (`--scene-norm auto`, the default; the manifest says which forests need it). This is what lets a forest trained on one set of flights score a flight with a different colour balance: the absolute means of a scene shift with the camera and the day, the contrast to the surrounding canopy does not. The calibrated cut is `p >= 0.7` for the RGB+NIR and CIR forests and `p >= 0.6` for the RGB forest (`assets.operating_threshold(mode=...)`, `operating_point.per_mode` in the assets-v3 manifest); `p_object` from the RGB+NIR object forest is a second, stricter score -- on an unseen scene `p_object >= 0.4` roughly halves the false points at two thirds of the trees. The RGB forest of assets-v3 is the assets-v1 one (segment-under-top labels): on an independent test area without NIR it gives 30% precision at 60% recall where the whole-crown-label forest of v2 gave 16%; there is no object forest for RGB.
 
