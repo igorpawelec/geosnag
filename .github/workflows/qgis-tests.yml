@@ -24,11 +24,11 @@ jobs:
         with:
           path: geosnag
 
-      - name: Check out pygeoadaptels (vendored into the zip)
+      - name: Check out geosegments (pygeoadaptels is vendored into the zip)
         uses: actions/checkout@v4
         with:
-          repository: igorpawelec/pygeoadaptels
-          path: pygeoadaptels
+          repository: igorpawelec/geosegments
+          path: geosegments
 
       - name: Check out geopalette (pygeopalette is vendored into the zip)
         uses: actions/checkout@v4

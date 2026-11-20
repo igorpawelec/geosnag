@@ -2,7 +2,7 @@
 
 ``pygeosnag``, ``pygeoadaptels`` and ``pygeopalette`` are pure Python, so a
 copy of them rides along inside the plugin (build_zip.py refreshes
-``vendor/`` from ``python/`` of this repository and from the pygeoadaptels
+``vendor/`` from ``python/`` of this repository and from the geosegments
 and geopalette checkouts beside it). No pip, no network, no git.
 
 **An installed copy wins unless the bundled one is newer.** Another plugin

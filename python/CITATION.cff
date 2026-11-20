@@ -18,7 +18,7 @@ references:
     authors:
       - family-names: Pawelec
         given-names: Igor
-    repository-code: "https://github.com/igorpawelec/pygeoadaptels"
+    repository-code: "https://github.com/igorpawelec/geosegments"
   - type: article
     title: "Scale-Adaptive Superpixels"
     authors:

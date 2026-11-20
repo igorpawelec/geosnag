@@ -3,7 +3,7 @@
 A QGIS plugin zip has the plugin folder at its top level, so this zips
 ``geosnag_plugin/`` (excluding bytecode) after refreshing ``vendor/`` with
 three pure-Python packages: pygeosnag from ``python/`` of this repository,
-and pygeoadaptels and pygeopalette from the ``pygeoadaptels`` and
+and pygeoadaptels and pygeopalette from the ``geosegments`` and
 ``geopalette`` checkouts beside it. Install via
 QGIS -> Plugins -> Manage and Install Plugins -> Install from ZIP.
 
@@ -23,7 +23,7 @@ SKIP_EXT = {".pyc", ".pyo"}
 
 VENDOR_SRC = {
     "pygeosnag": os.path.join(REPO, "python", "pygeosnag"),
-    "pygeoadaptels": os.path.join(BESIDE, "pygeoadaptels", "pygeoadaptels"),
+    "pygeoadaptels": os.path.join(BESIDE, "geosegments", "adaptels", "python", "pygeoadaptels"),
     "pygeopalette": os.path.join(BESIDE, "geopalette", "python", "pygeopalette"),
 }
 
@@ -53,7 +53,7 @@ def vendor():
         src = os.path.abspath(src)
         if not os.path.isdir(src):
             raise SystemExit(f"Cannot vendor {name}: {src} not found. The build expects "
-                             f"pygeosnag in python/ of this repository and the pygeoadaptels "
+                             f"pygeosnag in python/ of this repository and the geosegments "
                              f"and geopalette checkouts beside the repository.")
         shutil.copytree(src, os.path.join(dest_root, name),
                         ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo"))

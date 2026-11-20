@@ -3,10 +3,11 @@
 # Releases and installs it.
 #
 # The build vendors three pure-Python packages: pygeosnag from python/ of the
-# tagged commit, and pygeoadaptels and pygeopalette from checkouts *beside*
-# this repository, which is why those two are cloned first into the parent
-# directory, at their default branches. Pin them here if a release should be
-# tied to specific package versions.
+# tagged commit, and pygeoadaptels and pygeopalette from checkouts of the
+# geosegments and geopalette repositories *beside* this one, which is why
+# those two are cloned first into the parent directory, at their default
+# branches. Pin them here if a release should be tied to specific package
+# versions.
 name: qgis-release
 
 on:
@@ -26,11 +27,11 @@ jobs:
         with:
           path: geosnag
 
-      - name: Check out pygeoadaptels (vendored into the zip)
+      - name: Check out geosegments (pygeoadaptels is vendored into the zip)
         uses: actions/checkout@v4
         with:
-          repository: igorpawelec/pygeoadaptels
-          path: pygeoadaptels
+          repository: igorpawelec/geosegments
+          path: geosegments
 
       - name: Check out geopalette (pygeopalette is vendored into the zip)
         uses: actions/checkout@v4

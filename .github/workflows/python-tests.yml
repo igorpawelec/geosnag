@@ -44,13 +44,13 @@ jobs:
       - name: Install
         # pygeoadaptels and pygeopalette are not on PyPI, so they come from
         # their repositories first; pip then sees the two dependencies of
-        # pyproject as satisfied. pygeopalette lives in python/ of the
-        # geopalette repository. Everything else ships wheels for all three
-        # platforms. python -m pip, so the install lands in the interpreter
-        # that runs the tests.
+        # pyproject as satisfied. pygeoadaptels lives in adaptels/python/ of
+        # the geosegments repository, pygeopalette in python/ of geopalette.
+        # Everything else ships wheels for all three platforms. python -m
+        # pip, so the install lands in the interpreter that runs the tests.
         run: |
           python -m pip install --upgrade pip
-          python -m pip install "git+https://github.com/igorpawelec/pygeoadaptels.git" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python"
+          python -m pip install "git+https://github.com/igorpawelec/geosegments.git#subdirectory=adaptels/python" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python"
           python -m pip install -e ".[all]"
           python -m pip install pytest pyflakes
 

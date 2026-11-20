@@ -64,12 +64,10 @@ change was meant to do. The matrix is the part that disagrees.
    everywhere, and the curl form needs nothing but a public repo.
 6. Only then tag and push the tag:
    `git tag -a python-vX.Y.Z -m "..." && git push --tags` (tags carry the package prefix: `python-v` here, `qgis-v` for the plugin)
-7. If this release changes what the package produces, bump the pin in
-   [rgeoadaptels](https://github.com/igorpawelec/rgeoadaptels)'s
-   `.github/workflows/R-CMD-check.yaml`, which installs `pygeosnag` from a tag.
-   Leaving it stale does not break anything visibly — the R twin goes on
-   proving its agreement against the previous release, which is exactly the
-   kind of quiet staleness this checklist exists to prevent.
+7. If this release changes what the package produces, release the plugin in
+   [`qgis/`](../qgis/) with it: its zip carries a copy of this package, and a
+   plugin that bundles the previous release goes on computing the previous
+   results without saying so.
 
 The order matters. A tag is what people install and what a DOI points at, so
 it should never be the thing that discovers a broken build. If Actions is

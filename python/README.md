@@ -8,13 +8,13 @@
 
 **Standing dead trees on aerial orthophotos, as points — and the crowns grown from them.**
 
-A raster goes in, one point per dead tree comes out, with a confidence. No seeds, no tree tops, no canopy height model. The points are seeds for the second step: `grow_crowns` grows each into a crown polygon with the seeded region growing of [pygeoadaptels](https://github.com/igorpawelec/pygeoadaptels) and a crown recipe.
+A raster goes in, one point per dead tree comes out, with a confidence. No seeds, no tree tops, no canopy height model. The points are seeds for the second step: `grow_crowns` grows each into a crown polygon with the seeded region growing of [pygeoadaptels](https://github.com/igorpawelec/geosegments) and a crown recipe.
 
 ## Install
 
 ```bash
 conda install -c conda-forge numpy numba scipy scikit-learn joblib rasterio fiona shapely
-pip install --no-deps "git+https://github.com/igorpawelec/pygeoadaptels.git" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python" "git+https://github.com/igorpawelec/geosnag.git#subdirectory=python"
+pip install --no-deps "git+https://github.com/igorpawelec/geosegments.git#subdirectory=adaptels/python" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python" "git+https://github.com/igorpawelec/geosnag.git#subdirectory=python"
 ```
 
 None of the three packages is on PyPI; they install from their repositories. pygeosnag lives in `python/` of this repository, next to the QGIS plugin in [`qgis/`](../qgis/).

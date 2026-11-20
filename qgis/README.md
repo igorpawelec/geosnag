@@ -71,7 +71,7 @@ The models were trained on aerial orthophotos of Polish lowland forests with dea
 
 > The study used data shared by the Task Force for Developing and Pilot Implementing a System for Monitoring and Detecting Dying and Dead Trees Using Geoinformatics Techniques in the Polish State Forests, established under Directive No. 48 of the General Director of State Forests, dated July 15, 2021. We extend special thanks to Mr. Kamil Onoszko for his invaluable support and contributions to this research.
 
-The models are published as [release assets](https://github.com/igorpawelec/geosnag/releases/tag/assets-v3) of this repository and downloaded on first use. The plugin bundles the three Python packages the method is made of: [pygeosnag](../python/) (detection and crowns, in `python/` of this repository), [pygeoadaptels](https://github.com/igorpawelec/pygeoadaptels) (adaptels and seeded region growing) and [pygeopalette](https://github.com/igorpawelec/geopalette) (colour spaces).
+The models are published as [release assets](https://github.com/igorpawelec/geosnag/releases/tag/assets-v3) of this repository and downloaded on first use. The plugin bundles the three Python packages the method is made of: [pygeosnag](../python/) (detection and crowns, in `python/` of this repository), [pygeoadaptels](https://github.com/igorpawelec/geosegments) (adaptels and seeded region growing) and [pygeopalette](https://github.com/igorpawelec/geopalette) (colour spaces).
 
 ## Citing
 
