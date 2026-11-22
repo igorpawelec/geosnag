@@ -85,3 +85,46 @@ def test_three_band_cir_is_sniffed_and_grown_on_ndvi(tmp_path, capsys):
     assert grow_crowns(cir, pts, out, quiet=False) == 2
     report = capsys.readouterr().out
     assert "mode cir (auto:" in report and "space ndvi_L" in report
+
+
+def _tiled_scene(tmp_path, size=400, block=64):
+    """The scene of ``_scene`` as a tiled GeoTIFF, so that grow_crowns cuts it into
+    square tiles; a striped one is cut into full-width bands and no blob of the
+    scene crosses a band."""
+    raster, pts, blobs = _scene(tmp_path, size)
+    tiled = os.path.join(tmp_path, "scene_tiled.tif")
+    with rasterio.open(raster) as src:
+        prof = src.profile.copy()
+        prof.update(tiled=True, blockxsize=block, blockysize=block)
+        with rasterio.open(tiled, "w", **prof) as dst:
+            dst.write(src.read())
+    return tiled, pts, blobs
+
+
+def test_a_crown_that_crosses_a_tile_seam_is_whole(tmp_path):
+    """With tile=128 the seams run at rows and columns 128, 256 and 384. The
+    blob at (100, 120) of radius 9 crosses column 128 and the one at (300, 260)
+    of radius 12 crosses column 256. Until 0.5.3 a tile dropped the pixels of
+    its core that went to a point standing in its halo, so both crowns ended
+    in a straight edge at the seam: 20.3 m2 where the whole raster gives 27.6."""
+    from shapely.geometry import shape
+    raster, pts, blobs = _tiled_scene(str(tmp_path))
+    whole = os.path.join(str(tmp_path), "whole.gpkg")
+    tiled = os.path.join(str(tmp_path), "tiled.gpkg")
+    labels = os.path.join(str(tmp_path), "labels.tif")
+    assert grow_crowns(raster, pts, whole, tile=4096, quiet=True) == 2
+    assert grow_crowns(raster, pts, tiled, tile=128, labels_out=labels, quiet=True) == 2
+    a1, a2 = _crowns(whole), _crowns(tiled)
+    for i in range(2):
+        assert abs(a1[i] - a2[i]) < 0.5, (i, a1[i], a2[i])              # tie noise at most
+    with rasterio.open(labels) as src:
+        lab = src.read(1)
+    # each crown has pixels on both sides of its seam, and they are one polygon
+    assert (lab[:, :128] == 0).any() and (lab[:, 128:] == 0).any()
+    assert (lab[:, :256] == 1).any() and (lab[:, 256:] == 1).any()
+    with fiona.open(tiled) as f:
+        for ft in f:
+            geom, pr = shape(ft["geometry"]), ft["properties"]
+            assert pr["n_parts"] == 1, pr
+            assert pr["area_m2"] == pytest.approx(geom.area, abs=0.006)
+            assert pr["area_m2"] == pytest.approx((lab == pr["adaptel_id"]).sum() * 0.0625, abs=0.006)

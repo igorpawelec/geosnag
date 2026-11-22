@@ -137,9 +137,16 @@ def _tiles(height, width, striped, tile):
 
 def _grow_tile(raster_path, core, halo, seeds_rc, index, lch_trio, recipe, space="lab_w", rule="partition"):
     """Grow one tile: read core + halo, CIELAB, grow_seeds with every point in the
-    window, keep the crowns of the core's points. Returns (core labels with GLOBAL
-    point ids, -1 unassigned; core transform; pixel counts per id; points in core)
-    or None when the window holds no usable point."""
+    window, keep what the pixels of the core went to. Returns (core labels with
+    GLOBAL point ids, -1 unassigned; core transform; pixel counts per id; points
+    in core) or None when the window holds no usable point.
+
+    A pixel of the core keeps its point whether that point stands in the core or
+    in the halo. Every pixel of the raster is in exactly one core, so a crown
+    that crosses a seam is written half by one tile and half by the next, and
+    grow_crowns joins the halves under the point's id. Until 0.5.3 the points
+    of the halo were dropped after growing, which cut every such crown off at
+    the seam: straight edge, part of the area missing."""
     import rasterio
     from rasterio.windows import Window
     from pygeoadaptels.grow import grow_seeds
@@ -169,7 +176,7 @@ def _grow_tile(raster_path, core, halo, seeds_rc, index, lch_trio, recipe, space
         labels = grow_seeds(lab, local, mask=(~valid).astype(np.uint8), quiet=True,
                             **{k: v for k, v in recipe.items() if k != "taper"})
     is_core = ((seeds_rc[gid, 0] >= r0) & (seeds_rc[gid, 0] < r1) & (seeds_rc[gid, 1] >= c0) & (seeds_rc[gid, 1] < c1))
-    to_global = np.where(is_core, gid, -1).astype(np.int32)
+    to_global = gid.astype(np.int32)
     lab_global = np.where(labels >= 0, to_global[np.clip(labels, 0, None)], -1).astype(np.int32)
     core_labels = np.ascontiguousarray(lab_global[r0 - wr0:r1 - wr0, c0 - wc0:c1 - wc0])
     assigned = core_labels[core_labels >= 0]
@@ -288,9 +295,12 @@ def grow_crowns(raster_path, points_path, out_polygons, mode=None, bands=None, l
     on_raster = (seeds_rc[:, 0] >= 0) & (seeds_rc[:, 0] < H) & (seeds_rc[:, 1] >= 0) & (seeds_rc[:, 1] < W)
     rr, cc = seeds_rc[on_raster, 0], seeds_rc[on_raster, 1]
     cores = _tiles(H, W, striped, tile)
-    with_seeds = [c for c in cores if ((rr >= c[0]) & (rr < c[1]) & (cc >= c[2]) & (cc < c[3])).any()]
+    # A tile is grown when a point stands within the halo of its core: a crown
+    # reaches into a neighbouring core that holds no point of its own.
+    with_seeds = [c for c in cores if ((rr >= c[0] - halo) & (rr < c[1] + halo)
+                                       & (cc >= c[2] - halo) & (cc < c[3] + halo)).any()]
     report(0.0, f"pygeosnag: {os.path.basename(raster_path)} {W} x {H} px, mode {m.name}{mode_note}, {len(xy)} points "
-                f"({int((~on_raster).sum())} off the raster), {len(with_seeds)} of {len(cores)} tiles hold points, "
+                f"({int((~on_raster).sum())} off the raster), {len(with_seeds)} of {len(cores)} tiles are within reach of a point, "
                 f"halo {halo} px, space {space}, rule {rule}, recipe {kw}")
 
     dst_labels = None
