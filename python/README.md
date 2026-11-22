@@ -13,11 +13,11 @@ A raster goes in, one point per dead tree comes out, with a confidence. No seeds
 ## Install
 
 ```bash
-conda install -c conda-forge numpy numba scipy scikit-learn joblib rasterio fiona shapely
+conda install -c conda-forge numpy numba scipy scikit-learn=1.8.0 joblib rasterio fiona shapely
 pip install --no-deps "git+https://github.com/igorpawelec/geosegments.git#subdirectory=adaptels/python" "git+https://github.com/igorpawelec/geopalette.git#subdirectory=python" "git+https://github.com/igorpawelec/geosnag.git#subdirectory=python"
 ```
 
-None of the three packages is on PyPI; they install from their repositories. pygeosnag lives in `python/` of this repository, next to the QGIS plugin in [`qgis/`](../qgis/).
+scikit-learn is named with a version because the forests are pickles made with 1.8.0 (the `sklearn` entry of the manifest; `geosnag info` prints it). Another version loads them with scikit-learn's `InconsistentVersionWarning` and no promise of the same result. None of the three packages is on PyPI; they install from their repositories. pygeosnag lives in `python/` of this repository, next to the QGIS plugin in [`qgis/`](../qgis/).
 
 The models are [release assets](https://github.com/igorpawelec/geosnag/releases/tag/assets-v3) of this repository, not part of the wheel. They are downloaded on first use into `~/.cache/pygeosnag/` and verified against a manifest. Set `PYGEOSNAG_ASSETS` to a directory that already holds them to work offline.
 
@@ -45,7 +45,7 @@ detect("ortho.tif", "trees.gpkg", stands="stands.gpkg")
 grow_crowns("ortho.tif", "trees.gpkg", "crowns.gpkg")
 ```
 
-The point layer `dead_trees` carries, per tree: `p` (the highest adaptel probability of the object), `p_mean`, `p_object` (the object forest, RGB+NIR only), `area_m2` and `n_adaptels` of the detected object, `in_stands`, `edge_px` (distance to nodata), `mode` and `model`.
+The point layer `dead_trees` carries, per tree: `p` (the highest adaptel probability of the object), `p_mean`, `p_object` (the object forest, RGB+NIR only), `area_m2` and `n_adaptels` of the detected object, `in_stands`, `edge_px` (distance to nodata), `mode` and `model`, and `id`, `height_m` (with a height model) and `tile`. The crown layer `crowns` has one (multi)polygon per point that grew: `adaptel_id` (the index of the point in the input layer, from 0), `area_m2`, `perimeter` (the length of the outline along the pixel edges, holes included) and `n_parts`.
 
 ## What to expect
 

@@ -29,7 +29,9 @@ classifiers = [
 # Same policy as pygeoadaptels: only what `import pygeosnag` needs. The
 # GDAL-linked packages (rasterio, fiona) and shapely are imported lazily
 # inside the functions that need them and are best installed with conda:
-#   conda install -c conda-forge numpy numba scipy scikit-learn joblib rasterio fiona shapely
+#   conda install -c conda-forge numpy numba scipy scikit-learn=1.8.0 joblib rasterio fiona shapely
+# scikit-learn 1.8.0 is the version the models of assets-v3 were pickled with; the
+# requirement below stays loose so that pip does not fight a conda environment.
 dependencies = [
     "numpy>=1.21",
     "scipy>=1.7",
