@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.5.3 — crowns whole across tile seams, their perimeter the outline
+
+- **`grow_crowns` cut every crown that crosses a tile seam.** A tile grew the
+  points of its core and of its halo and then dropped what the halo's points
+  had taken, so a crown ended in a straight edge where the next tile began:
+  on a synthetic scene cut into 128 px tiles a 27.6 m² crown came out at
+  20.3 m². A pixel of the core now keeps the point it went to wherever that
+  point stands, the halves are joined under the point's id, and a tile with
+  no point of its own is grown when a point stands within its halo. **This
+  changes the crowns near the seams of a raster larger than one tile** (2048
+  px, or the whole width of a striped GeoTIFF in bands); a raster that fits
+  one tile, the test orthophoto included, gives the same crowns as before.
+- **A stand layer in another coordinate system than the orthophoto dropped
+  every tree.** The polygons were used as they came, so none of them
+  contained a point. They are brought into the raster's system first; the
+  buffer is in its metres.
+- `perimeter` of the crown polygons was the circumference of a circle of the
+  crown's area, `2 * sqrt(pi * area)`. It is now the length of the crown's
+  outline, along the pixel edges and with the edges of holes: the largest crown
+  on the test raster reads 58.0 m where it read 29.6 m. **The values of this
+  field change**; `area_m2`, the geometries and the points do not. `detect`
+  gives the same points as 0.5.2, to the last digit of the coordinates and
+  of `p`.
+- `geosnag info` printed one operating point, 0.7, although the RGB forest
+  of assets-v3 runs at 0.6; it prints both. The help of `--threshold` named
+  assets-v2.
+- The README names scikit-learn 1.8.0, the version the forests were pickled
+  with, and lists the fields of both output layers.
+- Two calls that rasterio and affine have announced the end of are gone:
+  `DatasetReader.is_tiled` (read from `block_shapes` instead) and `Affine *
+  (x, y)` (written out). Nothing changes in the result; a future rasterio would
+  have stopped `grow_crowns`.
+
 ## 0.5.2 — the package and its models live in the geosnag repository
 
 - The models are downloaded from the releases of `igorpawelec/geosnag`, where
