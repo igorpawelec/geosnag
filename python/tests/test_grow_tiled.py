@@ -72,6 +72,26 @@ def test_two_blobs_grow_into_two_crowns_whole_or_tiled(tmp_path):
         assert f.schema["geometry"] == "MultiPolygon" and {"adaptel_id", "area_m2", "perimeter", "n_parts"} <= set(props)
 
 
+def test_area_and_perimeter_are_those_of_the_crown_outline(tmp_path):
+    """Until 0.5.3 ``perimeter`` was the circumference of a circle of the crown's
+    area. A blob drawn on a pixel grid has a staircase outline, about 4/pi times
+    longer than that circle, so the old value fails this by a quarter."""
+    from shapely.geometry import shape
+    raster, pts, blobs = _scene(str(tmp_path))
+    out = os.path.join(str(tmp_path), "crowns.gpkg")
+    assert grow_crowns(raster, pts, out, quiet=True) == 2
+    with fiona.open(out) as f:
+        feats = list(f)
+    for ft in feats:
+        geom, pr = shape(ft["geometry"]), ft["properties"]
+        assert pr["area_m2"] == pytest.approx(geom.area, abs=0.006)
+        assert pr["perimeter"] == pytest.approx(geom.length, abs=0.006)
+        circle = 2.0 * np.sqrt(np.pi * pr["area_m2"])
+        assert pr["perimeter"] > 1.15 * circle, (pr["perimeter"], circle)
+        # edges of 0.25 m pixels: a whole number of quarter-metres
+        assert (pr["perimeter"] / 0.25) == pytest.approx(round(pr["perimeter"] / 0.25), abs=1e-6)
+
+
 def test_three_band_cir_is_sniffed_and_grown_on_ndvi(tmp_path, capsys):
     raster, pts, _ = _scene(str(tmp_path))
     cir = os.path.join(str(tmp_path), "cir.tif")

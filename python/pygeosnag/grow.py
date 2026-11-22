@@ -205,7 +205,8 @@ def grow_crowns(raster_path, points_path, out_polygons, mode=None, bands=None, l
     out_polygons : str
         Output crowns (.gpkg, layer ``crowns``): one MultiPolygon per point that
         grew, ``adaptel_id`` = the point's index in the layer (0-based),
-        ``area_m2``, ``perimeter``, ``n_parts``.
+        ``area_m2``, ``perimeter`` (the length of the outline along the pixel
+        edges, holes included), ``n_parts``.
     mode, bands : as in detect -- decide which bands make the CIELAB.
     labels_out : str, optional
         Also write the label raster (int32, -1 unassigned, tiled GeoTIFF).
@@ -370,7 +371,10 @@ def grow_crowns(raster_path, points_path, out_polygons, mode=None, bands=None, l
             area = float(counts[gid_] * px_area)
             batch.append({"geometry": mapping(geom),
                           "properties": {"adaptel_id": int(gid_), "area_m2": round(area, 2),
-                                         "perimeter": round(float(2.0 * np.sqrt(np.pi * area)), 2),
+            # The length of the crown's outline, along the pixel edges and with the
+            # edges of holes. Until 0.5.3 this field held the circumference of a
+            # circle of the same area, 2 * sqrt(pi * area).
+                                         "perimeter": round(float(geom.length), 2),
                                          "n_parts": len(geom.geoms)}})
             if len(batch) >= 2000:
                 dst.writerecords(batch)
