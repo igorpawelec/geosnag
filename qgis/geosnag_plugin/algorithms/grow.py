@@ -15,7 +15,8 @@ from qgis.core import (
 )
 
 from .. import styling
-from ._base import progress_adapter, MODE_KEYS, MODES, advanced, hp, package_error, require_packages, source_path, warm_jit
+from ._base import (progress_adapter, MODE_KEYS, MODES, advanced, hp, library_logs, package_error, require_packages,
+                    source_path, vector_source, warm_jit)
 
 SPACES = ["auto: NDVI + lightness when the raster has an infrared band, CIELAB colour when it has not",
           "ndvi_L: NDVI and lightness (needs the infrared band)",
@@ -151,7 +152,7 @@ class GrowCrownsAlgorithm(QgsProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         require_packages(feedback)
         layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
-        pts = self.parameterAsVectorLayer(parameters, self.POINTS, context)
+        points_path, points_layer = vector_source(self, parameters, self.POINTS, context, feedback)
         mode = MODE_KEYS[self.parameterAsEnum(parameters, self.MODE, context)]
         bands_s = (self.parameterAsString(parameters, self.BANDS, context) or "").strip()
         bands = tuple(b.strip() for b in bands_s.split(",")) if bands_s else None
@@ -193,10 +194,13 @@ class GrowCrownsAlgorithm(QgsProcessingAlgorithm):
                           f"{'of the space' if max_cost is None else max_cost}"
                           f"{'' if taper is None else f' at the seed, {cost_r:g} at the radius'}, radius {radius} px.")
         try:
-            n = grow_crowns(source_path(layer), pts.source(), out, mode=mode, bands=bands, labels_out=labels,
-                            space=space, rule=rule, max_cost=max_cost, taper=taper, band_weights=weights,
-                            max_radius=radius, fill_holes=self.parameterAsBool(parameters, self.FILL_HOLES, context),
-                            progress=progress_adapter(feedback), quiet=True)
+            with library_logs():
+                n = grow_crowns(source_path(layer), points_path, out, mode=mode, bands=bands, labels_out=labels,
+                                points_layer=points_layer,
+                                space=space, rule=rule, max_cost=max_cost, taper=taper, band_weights=weights,
+                                max_radius=radius,
+                                fill_holes=self.parameterAsBool(parameters, self.FILL_HOLES, context),
+                                progress=progress_adapter(feedback), quiet=True)
         except RuntimeError as e:
             if "cancelled" in str(e):
                 return {}

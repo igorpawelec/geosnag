@@ -1,5 +1,9 @@
 """Shared helpers for the algorithm classes: the dependency gate, the JIT
-warm-up, the progress adapter and the advanced-parameter flag."""
+warm-up, the progress adapter, the vector-input and library-log helpers and
+the advanced-parameter flag."""
+import contextlib
+import logging
+import threading
 import os
 
 from qgis.core import QgsProcessingException
@@ -239,6 +243,100 @@ def source_path(layer):
     if "|" in src:
         src = src.split("|", 1)[0]
     return src
+
+
+# Runs overlap: two dialogs working in the background, or this plugin and its
+# sibling (GeoSnag, GeoAdaptels + GeoPalette), which does the same to the same
+# two loggers from its own copy of this routine. So what a run changes is
+# counted on the logger itself, under names both plugins use: the first run to
+# arrive stops the propagation and notes how it was, the last one to leave puts
+# it back. Saved and restored per run, the run that left first switched the
+# propagation back on under the one still working, and that one then left it
+# off for the rest of the session.
+_RUN_LOCK = "_geo_plugins_run_lock"
+_RUN_DEPTH = "_geo_plugins_run_depth"
+_RUN_PROPAGATE = "_geo_plugins_run_propagate"
+
+
+def _run_lock(logger):
+    return logger.__dict__.setdefault(_RUN_LOCK, threading.Lock())
+
+
+class _ToMessageLog(logging.Handler):
+    """What a library logs, into the Log Messages panel under the plugin's name."""
+
+    def emit(self, record):
+        try:
+            from qgis.core import QgsMessageLog
+            QgsMessageLog.logMessage(f"{record.name}: {record.getMessage()}", "GeoSnag")
+        except Exception:
+            pass
+
+
+@contextlib.contextmanager
+def library_logs(names=("rasterio", "fiona")):
+    """Keep what rasterio and fiona log during a run away from the root logger.
+
+    GDAL's warnings reach Python as log records of rasterio; one arrives with
+    the first polygonisation of every session ("'Memory' driver is deprecated
+    since GDAL 3.11"), which here is the first Grow crowns. The two libraries
+    have no handler of their own, so the record travels up to the root logger,
+    and in a QGIS on Windows the root logger may hold a handler that cannot
+    write: a plugin that calls ``logging.basicConfig()`` while QGIS starts gets
+    a stream handler on ``sys.stderr``, which is None at that moment and stays
+    None in the handler. Every record that reaches it raises inside
+    ``logging``, which prints "--- Logging error ---" and a traceback through
+    this plugin's source into the Python console. The crowns are fine; it
+    reads as a crash.
+
+    For the length of a run the two loggers get a handler that writes to the
+    Log Messages panel and stop propagating. Both are put back when the last
+    run that asked for this has finished, so nothing changes for anything
+    else that uses them. The same routine as in
+    the GeoAdaptels + GeoPalette plugin.
+    """
+    handler = _ToMessageLog()
+    loggers = [logging.getLogger(name) for name in names]
+    for logger in loggers:
+        with _run_lock(logger):
+            depth = getattr(logger, _RUN_DEPTH, 0)
+            if depth == 0:
+                setattr(logger, _RUN_PROPAGATE, logger.propagate)
+                logger.propagate = False
+            setattr(logger, _RUN_DEPTH, depth + 1)
+            logger.addHandler(handler)
+    try:
+        yield
+    finally:
+        for logger in loggers:
+            with _run_lock(logger):
+                logger.removeHandler(handler)
+                depth = getattr(logger, _RUN_DEPTH, 1) - 1
+                setattr(logger, _RUN_DEPTH, max(depth, 0))
+                if depth <= 0:
+                    logger.propagate = getattr(logger, _RUN_PROPAGATE, True)
+
+
+def vector_source(algorithm, parameters, name, context, feedback):
+    """``(path, layer name)`` of a vector parameter, as a file pygeosnag can open.
+
+    pygeosnag reads its points and its stand polygons from a path. A layer
+    that lives in a GeoPackage or a shapefile comes back as that file and is
+    not copied. A temporary scratch layer has no file at all -- its source
+    reads ``Point?crs=EPSG:2180&field=...`` -- and a layer with a filter or
+    with "selected features only" has a file that holds more than the
+    operator sees. For those QGIS writes what is asked for into a temporary
+    GeoPackage and that is what the package gets. Until 0.5.5 the layer's
+    source string went to the package as it was, and a layer clicked in QGIS,
+    which the help recommends, failed with "Failed to open dataset".
+
+    The layer name is None for a file with a single layer.
+    """
+    path, layer_name = algorithm.parameterAsCompatibleSourceLayerPathAndLayerName(
+        parameters, name, context, ["gpkg", "shp"], "gpkg", feedback)
+    if not path:
+        raise QgsProcessingException(f"The layer given as {name} could not be read.")
+    return path, (layer_name or None)
 
 
 def advanced(param):

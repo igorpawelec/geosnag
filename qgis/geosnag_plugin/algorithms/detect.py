@@ -22,18 +22,8 @@ from qgis.core import (
 
 from .. import styling
 from ._base import (MODE_KEYS, MODES, RADIOMETRY_KEYS, RADIOMETRY_OPTIONS, SCENE_NORM_KEYS, SCENE_NORM_OPTIONS,
-                    advanced, hp, package_error, progress_adapter, report_models, require_packages, set_assets_dir,
-                    source_path, warm_jit)
-
-
-def _split_source(layer):
-    src = layer.source()
-    path = src.split("|", 1)[0]
-    name = None
-    for part in src.split("|")[1:]:
-        if part.startswith("layername="):
-            name = part[len("layername="):]
-    return path, name
+                    advanced, hp, library_logs, package_error, progress_adapter, report_models, require_packages,
+                    set_assets_dir, source_path, vector_source, warm_jit)
 
 
 class DetectDeadTreesAlgorithm(QgsProcessingAlgorithm):
@@ -248,8 +238,9 @@ class DetectDeadTreesAlgorithm(QgsProcessingAlgorithm):
         mode = MODE_KEYS[self.parameterAsEnum(parameters, self.MODE, context)]
         bands_s = (self.parameterAsString(parameters, self.BANDS, context) or "").strip()
         bands = tuple(b.strip() for b in bands_s.split(",")) if bands_s else None
-        stands_layer = self.parameterAsVectorLayer(parameters, self.STANDS, context)
-        stands, stand_layer = _split_source(stands_layer) if stands_layer is not None else (None, None)
+        stands, stand_layer = None, None
+        if self.parameterAsVectorLayer(parameters, self.STANDS, context) is not None:
+            stands, stand_layer = vector_source(self, parameters, self.STANDS, context, feedback)
         chm_layer = self.parameterAsRasterLayer(parameters, self.CHM, context)
         dsm_layer = self.parameterAsRasterLayer(parameters, self.DSM, context)
         dtm_layer = self.parameterAsRasterLayer(parameters, self.DTM, context)
@@ -271,19 +262,20 @@ class DetectDeadTreesAlgorithm(QgsProcessingAlgorithm):
         report_models(feedback, threshold, mode)
         from pygeosnag.detect import detect
         try:
-            n = detect(source_path(layer), out, mode=mode, bands=bands,
-                       threshold=threshold, object_threshold=object_threshold,
-                       scene_norm=scene_norm, norm_tiles=norm_tiles, radiometry=radiometry,
-                       suppress_m=self.parameterAsDouble(parameters, self.SUPPRESS, context),
-                       stands=stands, stand_layer=stand_layer,
-                       stand_age=self.parameterAsDouble(parameters, self.STAND_AGE, context),
-                       stand_buffer=self.parameterAsDouble(parameters, self.STAND_BUFFER, context),
-                       keep_outside=self.parameterAsBool(parameters, self.KEEP_OUTSIDE, context),
-                       chm=chm, dsm=dsm, dtm=dtm,
-                       min_height=self.parameterAsDouble(parameters, self.MIN_HEIGHT, context),
-                       height_radius=self.parameterAsDouble(parameters, self.HEIGHT_RADIUS, context),
-                       keep_low=self.parameterAsBool(parameters, self.KEEP_LOW, context),
-                       prob_raster=prob, progress=progress_adapter(feedback), quiet=True)
+            with library_logs():
+                n = detect(source_path(layer), out, mode=mode, bands=bands,
+                           threshold=threshold, object_threshold=object_threshold,
+                           scene_norm=scene_norm, norm_tiles=norm_tiles, radiometry=radiometry,
+                           suppress_m=self.parameterAsDouble(parameters, self.SUPPRESS, context),
+                           stands=stands, stand_layer=stand_layer,
+                           stand_age=self.parameterAsDouble(parameters, self.STAND_AGE, context),
+                           stand_buffer=self.parameterAsDouble(parameters, self.STAND_BUFFER, context),
+                           keep_outside=self.parameterAsBool(parameters, self.KEEP_OUTSIDE, context),
+                           chm=chm, dsm=dsm, dtm=dtm,
+                           min_height=self.parameterAsDouble(parameters, self.MIN_HEIGHT, context),
+                           height_radius=self.parameterAsDouble(parameters, self.HEIGHT_RADIUS, context),
+                           keep_low=self.parameterAsBool(parameters, self.KEEP_LOW, context),
+                           prob_raster=prob, progress=progress_adapter(feedback), quiet=True)
         except RuntimeError as e:
             if "cancelled" in str(e):
                 return {}
