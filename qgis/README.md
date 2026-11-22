@@ -47,7 +47,7 @@ flowchart LR
 ## Quick start
 
 1. Download `geosnag_plugin-<version>.zip` from the [releases page](https://github.com/igorpawelec/geosnag/releases) and install it in QGIS: *Plugins → Manage and Install Plugins → Install from ZIP*. QGIS 3.28 or newer, QGIS 4 included.
-2. The first run installs the scientific Python packages the plugin needs into its own folder and downloads the models (60–145 MB per band mode). Both happen once; a machine without internet can be given a local models folder under *Advanced*.
+2. The first run installs the scientific Python packages the plugin needs into its own folder and downloads the models of the band mode in use (49 MB for RGB, 135 MB for colour infrared, 145 MB for RGB+NIR). Both happen once; a machine without internet can be given a local models folder under *Advanced*.
 3. *Processing Toolbox → GeoSnag → Detect dead trees*: choose the orthophoto, leave *Band mode* on auto (the log says what it read) and the threshold at 0, and run. Add stand polygons or a canopy height model if you have them; they remove roads, fields and bare ground from the result.
 4. *Grow crowns* with the same orthophoto and the points. The crowns come out styled, with their area in square metres. Your own point layer works here too: mark the trees you know and let the tool draw their crowns.
 

@@ -94,7 +94,7 @@ A dense cluster of dead spruces with the verified crowns dashed. Left: the recip
 
 The layer comes styled by confidence: below 0.6, 0.6 to 0.75, 0.75 to 0.9, 0.9 and above.
 
-**Crowns** (polygons, GeoPackage): one (multi)polygon per point with `adaptel_id` (the index of the point in the input layer), `area_m2`, `perimeter` and `n_parts`. A crown of several parts is a crown the tolerance split; the parts belong to the same point.
+**Crowns** (polygons, GeoPackage): one (multi)polygon per point with `adaptel_id` (the index of the point among the points that were grown, from 0: the layer as QGIS shows it, a filter applied), `area_m2`, `perimeter` (the length of the outline along the pixel edges, holes included) and `n_parts`. A crown of several parts is a crown the tolerance split; the parts belong to the same point.
 
 ## When the result is not what you expected
 

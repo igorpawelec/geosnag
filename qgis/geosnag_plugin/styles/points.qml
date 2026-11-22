@@ -1,7 +1,8 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis styleCategories="Symbology" version="3.28">
-  <!-- Dead-tree points: four fixed classes of p around the assets-v2 operating
-       point (0.7), hollow circles so the crown underneath stays visible.
+  <!-- Dead-tree points: four fixed classes of p around the operating points
+       of the models (0.7; 0.6 for rgb), hollow circles so the crown
+       underneath stays visible.
        Applied by Processing itself (RenderingStyles), never by plugin code in
        the task-completion handler. -->
   <renderer-v2 type="graduatedSymbol" attr="p" graduatedMethod="GraduatedColor" symbollevels="0" forceraster="0" enableorderby="0">
