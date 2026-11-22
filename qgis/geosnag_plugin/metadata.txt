@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 supportsQt6=True
 description=Standing dead trees from aerial orthophotos: one point per tree, then the crown grown around each point.
-version=0.5.4
+version=0.5.5
 author=Igor Pawelec
 email=igor.pawelec@urk.edu.pl
 about=EN: Finds standing dead trees on an aerial orthophoto (RGB+NIR, colour infrared or RGB, best at about 0.25 m) and writes one point per tree with a confidence; a second tool grows the crown polygon around each point, from the detected points or from your own. No tree tops, height model or training data are needed. The detector splits the image into adaptels (superpixels), describes each by colour, contrast and texture and scores it with a random forest trained on thousands of verified dead trees in Polish pine and spruce stands (Pawelec et al. 2026). The crowns are grown by seeded region growing on NDVI and lightness. Optional stand polygons and a canopy height model remove roads and bare ground. The models are downloaded on first use; the plugin installs its Python dependencies into its own folder. PL: Znajduje stojace martwe drzewa na ortofotomapie lotniczej (RGB+NIR, CIR lub RGB, najlepiej ok. 0,25 m) i zapisuje po jednym punkcie na drzewo z ocena pewnosci; drugie narzedzie rozrasta korone wokol kazdego punktu, z wykrytych punktow lub z wlasnych. Nie wymaga wierzcholkow, modelu wysokosci ani danych treningowych. Detektor dzieli obraz na adaptele (superpiksele), opisuje kazdy barwa, kontrastem i tekstura i ocenia lasem losowym uczonym na tysiacach zweryfikowanych martwych drzew w polskich drzewostanach sosnowych i swierkowych (Pawelec i in. 2026). Korony rosna przez rozrost obszarow z ziaren na NDVI i jasnosci. Opcjonalne wydzielenia i model wysokosci koron usuwaja drogi i grunt. Modele pobierane sa przy pierwszym uzyciu; wtyczka instaluje swoje zaleznosci Pythona do wlasnego folderu.
@@ -15,8 +15,27 @@ repository=https://github.com/igorpawelec/geosnag
 category=Analysis
 tags=raster,standing dead trees,snags,tree mortality,forestry,remote sensing,orthophoto,superpixels,delineation,random forest,region growing
 experimental=True
+hasProcessingProvider=yes
 deprecated=False
-changelog=0.5.4
+changelog=0.5.5
+    A temporary scratch layer works as the points of Grow crowns and as
+    the stand polygons of Detect: both failed with "Failed to open
+    dataset", although the help recommends a layer clicked in QGIS. A
+    layer with a filter is read as filtered; before, the filter was
+    ignored and every point of the file was grown. The
+    first sentence of each help paragraph is readable in dark themes.
+    Grow crowns no longer prints a "Logging error" traceback into the
+    Python console when another plugin has left the root logger without a
+    stream. With band mode auto the log names both operating points (0.7,
+    and 0.6 for RGB) and no longer says that 0.6 differs from the
+    operating point. Bundles pygeosnag 0.5.3 and pygeoadaptels 0.10.5:
+    crowns that cross a tile seam of a large orthophoto are no longer cut
+    off at the seam, which changes the crowns there; the perimeter of a
+    crown is the length of its outline, which changes the values of that
+    field; a stand layer in another coordinate system than the orthophoto
+    is reprojected instead of dropping every tree. The points are the
+    same.
+    0.5.4
     scikit-learn is installed at the version the models were made with
     (1.8.0). A newer copy in the plugin's libs folder is replaced on the
     next run, which ends scikit-learn's version warning when the models

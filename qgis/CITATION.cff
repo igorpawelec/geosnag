@@ -10,7 +10,7 @@ authors:
     orcid: "https://orcid.org/0009-0005-9798-3596"
 repository-code: "https://github.com/igorpawelec/geosnag"
 license: GPL-3.0-or-later
-version: "0.5.4"
+version: "0.5.5"
 date-released: "2026-11-22"
 keywords:
   - QGIS
