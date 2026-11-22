@@ -51,10 +51,14 @@ a repository is created or restructured, it is brought to this standard in the s
 
 ## Addresses
 
-- Inside a repository, links and images are relative (`../r/`, `www/pipeline.png`,
-  `../logo/<name>-mark.svg`): they work in a private repository, in a fork and after a rename.
-  An R package with a documentation site keeps images where the site builder copies them from
-  (`man/figures/`).
+- In the root README and in files read only on GitHub (the README of a plugin, `CONTRIBUTING.md`),
+  links and images are relative (`python/`, `logo/<name>.svg`, `www/toolbox.png`): they work in a
+  private repository, in a fork and after a rename.
+- A package README also travels with the package, to PyPI, to CRAN and into the built package,
+  where the rest of the repository is not. Its images are addressed absolutely
+  (`https://raw.githubusercontent.com/igorpawelec/<name>/main/...`), the figures in `www/`
+  included, because `www/` is not part of a built R package. An R package with a documentation
+  site keeps the images the site needs where the site builder copies them from (`man/figures/`).
 - Other repositories are named by their repository address, never by a folder on a computer.
 - Install commands name the repository and the folder:
   `pip install --no-deps "git+https://github.com/igorpawelec/<name>.git#subdirectory=python"`,
@@ -69,27 +73,33 @@ a repository is created or restructured, it is brought to this standard in the s
 
 In this order:
 
-1. The mark, right-aligned, before the title:
-   `<img src="logo/<name>-mark.svg" align="right" width="110" alt="...">`. The alt text describes
-   the picture. A package README shows the same mark by a relative path. An R package with a
-   pkgdown site keeps pkgdown's form, the logo inside the title line from `man/figures/logo.png`.
-2. `# name`
-3. Badges: one per workflow, then the licence. The latest tag of each package goes in the
+1. The title is the mark with the name beside it:
+   `<h1><img src="logo/<name>.svg" alt="<name>" height="96"/></h1>`. There is no text title next
+   to it; the image says the name.
+2. Badges: one per workflow, then the licence. The latest tag of each package goes in the
    installation table.
-4. One bold sentence: what it does.
-5. One paragraph: what goes in, what comes out, for whom.
-6. Installation: a table with one row per package (part, latest tag, command), or a list per
+3. One bold sentence: what it does.
+4. One paragraph: what goes in, what comes out, for whom.
+5. Installation: a table with one row per package (part, latest tag, command), or a list per
    platform for an application.
-7. `**Authors:**` Igor Pawelec and co-authors, the institution that owns the work where the
+6. `**Authors:**` Igor Pawelec and co-authors, the institution that owns the work where the
    repository belongs to the department (with its mark, as in `obiastudio`), `**License:**`.
-8. The problem it solves, and a worked example on real data, with a figure and one sentence that
+7. The problem it solves, and a worked example on real data, with a figure and one sentence that
    reads the figure as a decision (`geopl`: "Read that panel as a decision: ...").
-9. Quick start: a few lines per implementation, with a link to the package README for the rest.
-10. What is inside (an application: bullets with a bold lead-in) or what is where (packages: a
-    table of paths).
-11. Releases: how tags are named, and where the history came from if the repository was merged
+8. Quick start: a few lines per implementation, with a link to the package README for the rest.
+9. What is inside (an application: bullets with a bold lead-in) or what is where (packages: a
+   table of paths).
+10. Releases: how tags are named, and where the history came from if the repository was merged
     from others.
-12. Citation, licence, and a trademark disclaimer where a third-party product is named.
+11. Citation, licence, and a trademark disclaimer where a third-party product is named.
+
+A package README keeps its text title (`# pycacumen`), because the package is not named like the
+repository, and shows the same image right of it, by its absolute address (see Addresses):
+`<img src="https://raw.githubusercontent.com/igorpawelec/<name>/main/logo/<name>.svg" alt="<name>: what the mark shows" align="right" height="64"/>`.
+Where one R package sits at the root and has a pkgdown site (`geopl`), that image goes inside the
+title line, `# rgeopl <img .../>`, as pkgdown expects: the site drops an image in the title whose
+address contains `logo` and shows `man/figures/logo.png` instead. The README of a plugin shows the
+icon of the plugin.
 
 Every number in a README comes from a script in the repository; a figure is made by a script in
 `www/` or `vignettes/`. Nothing is claimed that a test or a named script does not check.
@@ -103,12 +113,17 @@ Every number in a README comes from a script in the repository; a figure is made
 
 ## Marks
 
-- `logo/<name>-mark.svg` is the mark alone, square; `logo/<name>.svg` is the mark with the name
-  beside it. Both are vector, drawn on one grid with one stroke weight across the family, and
-  legible on light and dark backgrounds. The SVG is the source and is the one edited.
+- `logo/<name>.svg` is the mark with the name beside it, the image the READMEs show;
+  `logo/<name>-mark.svg` is the mark alone, square, for the places that have no room for the name
+  (a favicon, the logo of an R package, an icon). Both are vector, drawn on one grid with one
+  stroke weight across the family, and legible on light and dark backgrounds. The SVG is the
+  source and is the one edited.
+- The icon of a QGIS plugin is a Q around the mark of the package the plugin serves:
+  `logo/<name>-qgis.svg`, rendered to the plugin's `icon.png`.
 - There are no PNG stickers. A PNG is rendered from the SVG only where a tool needs a raster: the
   logo of an R package (`man/figures/logo.png`, which the PDF manual needs), pkgdown favicons, a Qt
-  window icon, a QGIS plugin icon.
+  window icon, a QGIS plugin icon. The scripts that draw and render the marks are in
+  `ClaudeCode-sync\templates\marks\`.
 
 ## Versions, tags, releases
 
