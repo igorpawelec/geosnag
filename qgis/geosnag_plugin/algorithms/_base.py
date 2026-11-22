@@ -150,17 +150,26 @@ def report_models(feedback, threshold, mode=None):
         from pygeosnag import assets
         man = assets.manifest(quiet=True)
         opd = man.get("operating_point", {})
-        op = float(opd.get("threshold", 0.5))
-        per = opd.get("per_mode") or {}
-        if mode and mode in per:
-            op = float(per[mode])
-        feedback.pushInfo(f"Models: {man.get('release', assets.RELEASE)} from {assets.assets_dir()}, operating point p >= {op:g}"
-                          f"{' for mode ' + mode if mode and mode in per else ''}"
-                          f"{'' if mode else ' (band mode auto: the mode decides, see the first pygeosnag line)'}")
+        common = float(opd.get("threshold", 0.5))
+        per = {k: float(v) for k, v in (opd.get("per_mode") or {}).items()}
+        # With band mode auto the mode is only known once the raster is read,
+        # so every operating point the run may end up on is named: assets-v3
+        # has 0.7 and, for rgb, 0.6. Naming 0.7 alone made a threshold of 0.6
+        # on an RGB image "differ from the operating point" it was equal to.
+        if mode:
+            ops = {mode: per.get(mode, common)}
+            text = f"p >= {ops[mode]:g}" + (f" for mode {mode}" if mode in per else "")
+        else:
+            ops = dict({"": common}, **per)
+            text = f"p >= {common:g}" + "".join(f", {k} p >= {v:g}" for k, v in sorted(per.items()))
+            text += " (band mode auto: the mode decides, see the first pygeosnag line)"
+        feedback.pushInfo(f"Models: {man.get('release', assets.RELEASE)} from {assets.assets_dir()}, operating point {text}")
         if threshold is None:
             feedback.pushInfo("Threshold 0: the operating point of the band mode is used")
-        elif abs(float(threshold) - op) > 1e-9:
-            feedback.pushInfo(f"Threshold {float(threshold):g} differs from the models' operating point {op:g}")
+        elif all(abs(float(threshold) - v) > 1e-9 for v in ops.values()):
+            feedback.pushInfo(f"Threshold {float(threshold):g} differs from the models' operating point"
+                              f"{'s' if len(ops) > 1 else ''} "
+                              + ", ".join(f"{(k + ' ') if k else ''}{v:g}" for k, v in sorted(ops.items())))
         _report_sklearn(feedback, str(man.get("sklearn") or ""))
     except Exception as exc:                      # detect fetches the manifest again and reports properly
         feedback.pushInfo(f"Models: manifest not readable yet ({exc})")
