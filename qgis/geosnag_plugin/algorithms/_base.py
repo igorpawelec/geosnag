@@ -161,8 +161,28 @@ def report_models(feedback, threshold, mode=None):
             feedback.pushInfo("Threshold 0: the operating point of the band mode is used")
         elif abs(float(threshold) - op) > 1e-9:
             feedback.pushInfo(f"Threshold {float(threshold):g} differs from the models' operating point {op:g}")
+        _report_sklearn(feedback, str(man.get("sklearn") or ""))
     except Exception as exc:                      # detect fetches the manifest again and reports properly
         feedback.pushInfo(f"Models: manifest not readable yet ({exc})")
+
+
+def _report_sklearn(feedback, made_with):
+    """Say so when the scikit-learn of this run is not the one the models name.
+
+    The forests are pickles; scikit-learn loads them across close versions
+    with a warning of its own and promises nothing. The plugin installs the
+    version in ``deps.PINNED``; a manifest that names another one means the
+    models changed and the pin did not.
+    """
+    if not made_with:
+        return
+    from ..deps import PINNED, installed_version
+    have, _ = installed_version("sklearn")
+    if have and have != made_with:
+        feedback.pushWarning(f"The models were made with scikit-learn {made_with}; this run uses {have}.")
+    if PINNED.get("sklearn") and PINNED["sklearn"] != made_with:
+        feedback.pushInfo(f"The plugin installs scikit-learn {PINNED['sklearn']} but these models name "
+                          f"{made_with}: the plugin is older or newer than the models.")
 
 
 def _release():

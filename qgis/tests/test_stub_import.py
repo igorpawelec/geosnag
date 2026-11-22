@@ -50,7 +50,7 @@ def test_styling_and_deps_helpers():
         for qml in outputs.values():
             assert os.path.exists(os.path.join(styling.STYLES_DIR, qml)), qml
     specs = deps._install_specs()
-    assert "scikit-learn" in specs and "numba" in specs
+    assert f"scikit-learn=={deps.PINNED['sklearn']}" in specs and "numba" in specs
     ok, why = deps._importable("os")
     assert ok and why == ""
     ok, why = deps._importable("no_such_module_xyz")

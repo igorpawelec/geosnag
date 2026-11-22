@@ -1,7 +1,8 @@
 # What can be checked of the plugin in qgis/ without a QGIS: its modules
-# import and build their dialogs against a stub `qgis` module, pyflakes finds
-# nothing, and the zip builds with the three packages vendored. The Processing
-# runtime itself is tested in a live QGIS.
+# import and build their dialogs against a stub `qgis` module, the dependency
+# bootstrap asks for the right versions and keeps its folder lean, pyflakes
+# finds nothing, and the zip builds with the three packages vendored. The
+# Processing runtime itself is tested in a live QGIS.
 #
 # The zip carries pygeosnag from python/ of the commit under test, so this
 # workflow also runs when the package changes.
@@ -45,11 +46,11 @@ jobs:
 
       - name: Lint
         working-directory: geosnag/qgis
-        run: python -m pyflakes geosnag_plugin/ build_zip.py test_package_calls.py tests/test_stub_import.py
+        run: python -m pyflakes geosnag_plugin/ build_zip.py test_package_calls.py tests/test_stub_import.py tests/test_deps.py
 
-      - name: Import the plugin against a stub qgis
+      - name: Import the plugin against a stub qgis and test the dependency bootstrap
         working-directory: geosnag/qgis
-        run: python -m pytest -v tests/test_stub_import.py
+        run: python -m pytest -v tests/test_stub_import.py tests/test_deps.py
 
       - name: Build the zip
         working-directory: geosnag/qgis
