@@ -145,6 +145,7 @@ def wrong_pins():
     ``replaceable`` is True for a copy in libs/ that this session has not
     imported: only that one can be swapped by pip, here and now.
     """
+    importlib.invalidate_caches()                 # a folder pip filled a moment ago is otherwise not seen
     out = {}
     for mod, wanted in PINNED.items():
         found, folder = installed_version(mod)
@@ -340,9 +341,9 @@ def ensure_dependencies(feedback=None, auto_install=True):
                                      + "; the run goes on with the version that is there.\n" + tail.strip()[-600:])
         return (not missing), missing
 
+    importlib.invalidate_caches()                 # before anything looks at what pip just wrote
     _drop_stale_dist_info()
     prune_shadowed(feedback)
-    importlib.invalidate_caches()
     vendor_loader.activate()
     still = missing_packages()
     if still and feedback is not None:

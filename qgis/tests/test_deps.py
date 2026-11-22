@@ -5,6 +5,7 @@ made with, a copy in libs/ in another version is found without importing it,
 and the copies of interpreter-provided packages in libs/ are removed while
 everything else in libs/ stays.
 """
+import importlib
 import os
 import sys
 import types
@@ -25,6 +26,10 @@ def _package(folder, name, version=None):
     d = folder / name
     d.mkdir(parents=True)
     (d / "__init__.py").write_text(f'__version__ = "{version}"\n' if version else "", encoding="utf-8")
+    # The import system remembers what a folder held when it last looked and trusts the
+    # folder's timestamp to tell it otherwise; a package made within the same clock tick is
+    # invisible. deps.py clears the caches before it looks; the tests do it here.
+    importlib.invalidate_caches()
     return d
 
 
