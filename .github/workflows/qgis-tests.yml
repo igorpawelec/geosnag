@@ -46,11 +46,11 @@ jobs:
 
       - name: Lint
         working-directory: geosnag/qgis
-        run: python -m pyflakes geosnag_plugin/ build_zip.py test_package_calls.py tests/test_stub_import.py tests/test_deps.py
+        run: python -m pyflakes geosnag_plugin/ build_zip.py test_package_calls.py tests/test_stub_import.py tests/test_deps.py tests/test_helpers.py
 
       - name: Import the plugin against a stub qgis and test the dependency bootstrap
         working-directory: geosnag/qgis
-        run: python -m pytest -v tests/test_stub_import.py tests/test_deps.py
+        run: python -m pytest -v tests/test_stub_import.py tests/test_deps.py tests/test_helpers.py
 
       - name: Build the zip
         working-directory: geosnag/qgis

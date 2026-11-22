@@ -11,8 +11,8 @@ class QgsProcessingAlgorithm(_Stub):
     Double = 1; Integer = 0; Folder = 1; TypeRaster = 3; TypeVectorPolygon = 2; TypeVectorPoint = 0; FlagAdvanced = 1
 class QgsProcessingContext(_Stub):
     Double = 1; Integer = 0; Folder = 1; TypeRaster = 3; TypeVectorPolygon = 2; TypeVectorPoint = 0; FlagAdvanced = 1
-class QgsProcessingException(_Stub):
-    Double = 1; Integer = 0; Folder = 1; TypeRaster = 3; TypeVectorPolygon = 2; TypeVectorPoint = 0; FlagAdvanced = 1
+class QgsProcessingException(Exception):
+    """A real exception, so the code that raises and catches it can be tested."""
 class QgsProcessingParameterBoolean(_Stub):
     Double = 1; Integer = 0; Folder = 1; TypeRaster = 3; TypeVectorPolygon = 2; TypeVectorPoint = 0; FlagAdvanced = 1
 class QgsProcessingParameterEnum(_Stub):

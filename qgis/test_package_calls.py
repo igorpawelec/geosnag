@@ -2,7 +2,8 @@
 
 Runs pygeosnag.detect (points, with the progress callback the plugin uses,
 and a cancel) and pygeosnag.grow_crowns on the SNP_21_2020_1 test raster
-shipped with pygeoadaptels -- first on the detected points, then on the
+of pygeoadaptels (adaptels/python/test_data in a geosegments checkout beside
+this repository) -- first on the detected points, then on the
 36 reference dead-tree points shipped beside it.
 
     set PYGEOSNAG_ASSETS=<folder with the models and manifest.json>
@@ -12,7 +13,10 @@ import os
 import sys
 import tempfile
 
-DATA = "D:/Apps/pygeoadaptels/test_data"
+# The test raster and the 36 reference points live in the geosegments repository,
+# expected in a checkout beside this one, as build_zip.py expects it.
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(os.path.dirname(os.path.dirname(HERE)), "geosegments", "adaptels", "python", "test_data")
 RGB = os.path.join(DATA, "SNP_21_2020_1.tif")
 SHP = os.path.join(DATA, "dead_trees_test.shp")
 
