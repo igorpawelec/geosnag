@@ -311,7 +311,7 @@ def detect(raster_path, out_path, mode=None, bands=None, threshold=None, suppres
         if threshold is None:
             threshold = 0.5 if model else assets.operating_threshold(default=0.5, quiet=quiet, mode=m.name)
         mask_geom = load_stands(stands, stand_layer, min_age=stand_age, buffer_m=stand_buffer,
-                                quiet=quiet) if stands else None
+                                quiet=quiet, crs=ds.crs) if stands else None
         height_at, height_srcs = _height_sampler(chm, dtm, dsm, ds.crs, height_radius)
         if height_at is not None and not quiet:
             print(f"pygeosnag: height gate {min_height:g} m (max within {height_radius:g} m) from "
