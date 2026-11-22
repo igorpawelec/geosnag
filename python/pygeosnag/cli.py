@@ -48,8 +48,10 @@ def _info(a):
         print(f"  mode {k:<5} bands {', '.join(m.roles):<22} adaptels t{m.threshold:g}  {m.description}")
     try:
         man = assets.manifest(quiet=True)
+        op = man["operating_point"]
+        per = "".join(f", {k} p >= {v:g}" for k, v in sorted((op.get("per_mode") or {}).items()))
         print(f"manifest: created {man.get('created')}, sklearn {man.get('sklearn')}, "
-              f"operating point p >= {man['operating_point']['threshold']}")
+              f"operating point p >= {op['threshold']:g}{per}")
         for key, f in man["files"].items():
             print(f"  {key:<16} {f['kind']:<32} rows {f.get('rows', 0):,}")
     except Exception as e:                      # noqa: BLE001 -- info must never crash
@@ -68,7 +70,7 @@ def main(argv=None):
     d.add_argument("--mode", choices=sorted(MODES), default=None, help="band mode (default: from the band count and the band medians -- 3 bands are cir when band 2 is the darkest, else rgb)")
     d.add_argument("--bands", default=None, help="role of each raster band in order, e.g. nir,red,green,blue")
     d.add_argument("--threshold", type=float, default=None,
-                   help="probability cut; default = the models' operating point from the manifest (0.7 for assets-v2)")
+                   help="probability cut; default = the operating point of the band mode from the manifest (assets-v3: 0.7, rgb 0.6)")
     d.add_argument("--stands", default=None, help="stand polygons for the forest mask")
     d.add_argument("--stand-layer", default=None)
     d.add_argument("--stand-age", type=float, default=10)
