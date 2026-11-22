@@ -288,7 +288,9 @@ def grow_crowns(raster_path, points_path, out_polygons, mode=None, bands=None, l
         H, W = src.height, src.width
         tr = src.transform
         crs = src.crs
-        striped = (not src.is_tiled) or src.block_shapes[0][1] >= W
+        # Blocks as wide as the raster are strips. Read from block_shapes: rasterio's
+        # is_tiled, which said the same, is deprecated and will be removed.
+        striped = (not src.block_shapes) or any(bw >= W for _, bw in src.block_shapes)
         xy = _read_points(points_path, points_layer, crs, quiet)
         px_area = abs(tr.a * tr.e)
         prof = src.profile.copy()
@@ -369,11 +371,11 @@ def grow_crowns(raster_path, points_path, out_polygons, mode=None, bands=None, l
             if geom.geom_type == "Polygon":
                 geom = MultiPolygon([geom])
             area = float(counts[gid_] * px_area)
-            batch.append({"geometry": mapping(geom),
-                          "properties": {"adaptel_id": int(gid_), "area_m2": round(area, 2),
             # The length of the crown's outline, along the pixel edges and with the
             # edges of holes. Until 0.5.3 this field held the circumference of a
             # circle of the same area, 2 * sqrt(pi * area).
+            batch.append({"geometry": mapping(geom),
+                          "properties": {"adaptel_id": int(gid_), "area_m2": round(area, 2),
                                          "perimeter": round(float(geom.length), 2),
                                          "n_parts": len(geom.geoms)}})
             if len(batch) >= 2000:

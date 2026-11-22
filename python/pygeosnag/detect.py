@@ -24,6 +24,16 @@ MIN_VALID_PX = 10_000          # a tile with fewer valid pixels is skipped, as i
 SUPPRESS_M = 3.0               # two points closer than this: the weaker one goes
 
 
+def _apply(t, x, y):
+    """``t * (x, y)`` for an Affine and two arrays, written out.
+
+    affine 3 deprecates the ``*`` operator for points in favour of ``@``, which
+    affine 2 does not have. The sums are in the order affine uses, so the
+    result is the same to the last bit under either.
+    """
+    return x * t.a + y * t.b + t.c, x * t.d + y * t.e + t.f
+
+
 def tile_features(bands, valid, mode, adaptel_threshold=None):
     """Segment one window and return its feature table only (for scene statistics)."""
     roles = {r: np.asarray(bands[r], np.float32) for r in mode.roles}
@@ -150,8 +160,7 @@ def _height_sampler(chm, dtm, dsm, crs, radius_m=3.0):
         xs, ys = xy[:, 0], xy[:, 1]
         if crs and src.crs and src.crs != crs:
             xs, ys = _transform(crs, src.crs, list(xs), list(ys))
-        inv = ~src.transform
-        cols, rows = inv * (np.asarray(xs, float), np.asarray(ys, float))
+        cols, rows = _apply(~src.transform, np.asarray(xs, float), np.asarray(ys, float))
         return np.floor(rows).astype(np.int64), np.floor(cols).astype(np.int64)
 
     def read_max(src, rows, cols, r_px):
@@ -404,7 +413,7 @@ def detect(raster_path, out_path, mode=None, bands=None, threshold=None, suppres
                                              f"0 trees, {time.time() - t0:.0f}s")
                 continue
             F, cent, p2 = res["F"], res["centroid"], res["p2"]
-            pcol, prow = (~tf) * (cent[:, 0], cent[:, 1])
+            pcol, prow = _apply(~tf, cent[:, 0], cent[:, 1])
             pcol, prow = np.asarray(pcol), np.asarray(prow)
             grow, gcol = prow + r0, pcol + c0
             keep = (grow >= cr0) & (grow < cr1) & (gcol >= cc0) & (gcol < cc1)
