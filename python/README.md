@@ -1,6 +1,6 @@
 # pygeosnag
 
-<img src="../logo/geosnag-mark.svg" alt="geosnag mark: a standing dead tree with bare branches, marked by a point at its top" align="right" width="110"/>
+<img src="https://raw.githubusercontent.com/igorpawelec/geosnag/main/logo/geosnag.svg" alt="geosnag: a standing dead tree with bare branches, marked by a point at its top" align="right" height="64"/>
 
 [![python-tests](https://github.com/igorpawelec/geosnag/actions/workflows/python-tests.yml/badge.svg)](https://github.com/igorpawelec/geosnag/actions/workflows/python-tests.yml)
 [![Release](https://img.shields.io/github/v/tag/igorpawelec/geosnag?filter=python-v*&label=release)](https://github.com/igorpawelec/geosnag/releases)

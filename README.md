@@ -1,6 +1,4 @@
-<img src="logo/geosnag-mark.svg" align="right" width="110" alt="geosnag mark: a standing dead tree with bare branches, marked by a point at its top"/>
-
-# geosnag
+<h1><img src="logo/geosnag.svg" alt="geosnag" height="96"/></h1>
 
 [![python-tests](https://github.com/igorpawelec/geosnag/actions/workflows/python-tests.yml/badge.svg)](https://github.com/igorpawelec/geosnag/actions/workflows/python-tests.yml)
 [![qgis-tests](https://github.com/igorpawelec/geosnag/actions/workflows/qgis-tests.yml/badge.svg)](https://github.com/igorpawelec/geosnag/actions/workflows/qgis-tests.yml)
