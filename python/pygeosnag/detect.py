@@ -54,7 +54,7 @@ def detect_array(bands, valid, mode, forest, transform=None, threshold=0.5, obje
     mode : Mode
     forest : fitted segment forest of that mode
     transform : affine.Affine, optional -- centroids in map units if given
-    threshold : float, absolute probability cut (0.5 calibrated)
+    threshold : float, absolute probability cut
     object_forest : fitted object forest, optional (rgbn)
     adaptel_threshold : float, optional -- overrides the mode's granularity
     scene_norm : scenenorm.SceneNorm, optional -- fitted scene statistics; the
@@ -218,10 +218,10 @@ def detect(raster_path, out_path, mode=None, bands=None, threshold=None, suppres
         the first log line says which, and mode= or bands= override it.
     threshold : float, optional
         Absolute probability cut per adaptel. None (default) takes the
-        operating point of the shipped models from their manifest (0.7 for
-        assets-v2, 0.5 for assets-v1; 0.5 with a custom `model`). Recall is
-        flat between 0.6 and 0.8 for assets-v2 while precision rises; on a
-        scene the model has not seen, lower.
+        operating point the manifest of the shipped models records for the
+        band mode (assets-v3: 0.7 for RGB+NIR and CIR, 0.6 for RGB; 0.5
+        for assets-v1), and 0.5 with a custom `model`. The useful range is
+        0.5 to 0.8; on a scene the models have not seen, go lower.
     suppress_m : float
         Two points closer than this keep only the higher p (3 m).
     min_area : float
