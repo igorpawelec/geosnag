@@ -4,7 +4,7 @@ qgisMinimumVersion=3.28
 qgisMaximumVersion=4.99
 supportsQt6=True
 description=Standing dead trees from aerial orthophotos: one point per tree, then the crown grown around each point.
-version=0.5.5
+version=0.5.6
 author=Igor Pawelec
 email=igor.pawelec@urk.edu.pl
 about=EN: Finds standing dead trees on an aerial orthophoto (RGB+NIR, colour infrared or RGB, best at about 0.25 m) and writes one point per tree with a confidence; a second tool grows the crown polygon around each point, from the detected points or from your own. No tree tops, height model or training data are needed. The detector splits the image into adaptels (superpixels), describes each by colour, contrast and texture and scores it with a random forest trained on thousands of verified dead trees in Polish pine and spruce stands (Pawelec et al. 2026). The crowns are grown by seeded region growing on NDVI and lightness. Optional stand polygons and a canopy height model remove roads and bare ground. The models are downloaded on first use; the plugin installs its Python dependencies into its own folder. PL: Znajduje stojace martwe drzewa na ortofotomapie lotniczej (RGB+NIR, CIR lub RGB, najlepiej ok. 0,25 m) i zapisuje po jednym punkcie na drzewo z ocena pewnosci; drugie narzedzie rozrasta korone wokol kazdego punktu, z wykrytych punktow lub z wlasnych. Nie wymaga wierzcholkow, modelu wysokosci ani danych treningowych. Detektor dzieli obraz na adaptele (superpiksele), opisuje kazdy barwa, kontrastem i tekstura i ocenia lasem losowym uczonym na tysiacach zweryfikowanych martwych drzew w polskich drzewostanach sosnowych i swierkowych (Pawelec i in. 2026). Korony rosna przez rozrost obszarow z ziaren na NDVI i jasnosci. Opcjonalne wydzielenia i model wysokosci koron usuwaja drogi i grunt. Modele pobierane sa przy pierwszym uzyciu; wtyczka instaluje swoje zaleznosci Pythona do wlasnego folderu.
@@ -17,7 +17,12 @@ tags=raster,standing dead trees,snags,tree mortality,forestry,remote sensing,ort
 experimental=True
 hasProcessingProvider=yes
 deprecated=False
-changelog=0.5.5
+changelog=0.5.6
+    Bundles pygeoadaptels 0.10.6, whose compute kernels no longer hold
+    Python's global interpreter lock while they run, and pygeopalette
+    0.8.0. The detector, the crown growing and their results are
+    unchanged.
+    0.5.5
     A temporary scratch layer works as the points of Grow crowns and as
     the stand polygons of Detect: both failed with "Failed to open
     dataset", although the help recommends a layer clicked in QGIS. A
