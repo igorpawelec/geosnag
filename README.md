@@ -32,6 +32,10 @@ geosnag turns that imagery into a map of dead trees, one tree at a time:
 
 *A colour-infrared orthophoto of a pine stand (GUGiK, 0.25 m) and what geosnag makes of it: a point per standing dead tree, coloured by confidence, and the crown grown from each point. Read the colours as a decision: the confidence is written next to every point, so the map can be tightened or loosened afterwards without running anything again.*
 
+<img src="python/www/detect_grow.png" alt="An RGB orthophoto of a circular spruce plot; the same plot with 30 detected points coloured by confidence and 36 hand-digitised dead trees drawn as rings; and the 30 crown outlines grown from the points" width="100%"/>
+
+*A 0.25 m RGB orthophoto of a circular 100 m sample plot in a spruce stand, with no infrared band (`python/test_data/SNP_21_2020_1.tif`), on which 36 standing dead trees were digitised by hand (the rings), and what geosnag makes of it with its defaults: the RGB forest (`assets-v3/rgb`) at its calibrated cut p ≥ 0.6 places 30 points, and `grow_crowns` grows them into 30 crowns with a median area of 7.1 m². 19 of the 36 reference trees have a point within 1.5 m and 23 within 3 m, so 13 are missed even at the wider radius; 19 of the 30 points have a reference tree within 1.5 m and 23 within 3 m, so 7 sit where no dead tree was digitised. On RGB without infrared the detector finds about half of the trees on this plot. Read the colours as a decision: keeping only the points with p ≥ 0.7 leaves 18 and drops 12, 7 of them more than 1.5 m from any reference tree and 5 within 1.5 m of one, so the stricter map is cleaner and finds 14 of the 36 trees instead of 19. Made by `python/www/figures.py`.*
+
 ## Quick start
 
 Python, from the command line or as a library ([details](python/README.md)):

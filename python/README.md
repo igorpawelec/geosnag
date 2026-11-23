@@ -59,6 +59,10 @@ Measured on seven Polish forest sites (13 255 reference tree tops, 0.25 m orthop
 
 The reference marks one top per tree and misses many dead trees: a field review of 60 points the detector placed without a reference top classified 42% as trees (25% clearly dead), 30% as roads, 20% as bare soil. Precision against the reference is therefore a floor; against the review it is 55–65%, and 64–75% with a stand mask. The points sit a median 0.47 m from the reference top.
 
+<img src="https://raw.githubusercontent.com/igorpawelec/geosnag/main/python/www/detect_grow.png" alt="An RGB orthophoto of a circular spruce plot; the same plot with 30 detected points coloured by confidence and 36 hand-digitised dead trees drawn as rings; and the 30 crown outlines grown from the points" width="100%"/>
+
+*A 0.25 m RGB orthophoto of a circular 100 m sample plot in a spruce stand, with no infrared band (`test_data/SNP_21_2020_1.tif`), on which 36 standing dead trees were digitised by hand (the rings), and what pygeosnag makes of it with its defaults: the RGB forest (`assets-v3/rgb`) at its calibrated cut p ≥ 0.6 places 30 points, and `grow_crowns` grows them into 30 crowns with a median area of 7.1 m². 19 of the 36 reference trees have a point within 1.5 m and 23 within 3 m, so 13 are missed even at the wider radius; 19 of the 30 points have a reference tree within 1.5 m and 23 within 3 m, so 7 sit where no dead tree was digitised. On RGB without infrared the detector finds about half of the trees on this plot. Read the colours as a decision: keeping only the points with p ≥ 0.7 leaves 18 and drops 12, 7 of them more than 1.5 m from any reference tree and 5 within 1.5 m of one, so the stricter map is cleaner and finds 14 of the 36 trees instead of 19. Made by `www/figures.py`.*
+
 Three things the detector does not do: it does not separate dead from dying trees (the labels do not), it does not know species, and it has not seen leaf-off imagery. A scene from a different camera, species or decay stage can transfer badly: the ranking of the points is usually still right and the scale is not, so a lower threshold is the first thing to try there.
 
 ## How it works
@@ -80,6 +84,8 @@ The adaptels and their use for standing dead trees are described in:
 > Pawelec, I., Hawryło, P., Netzel, P., & Socha, J. (2026). Evaluating superpixel algorithms for standing dead tree delineation using aerial orthoimagery. *International Journal of Applied Earth Observation and Geoinformation*, 147, 105180. https://doi.org/10.1016/j.jag.2026.105180
 
 See `CITATION.cff`.
+
+The README figure is remade with `python www/figures.py`, run from this folder, from the files in `test_data/`. The script needs matplotlib, rasterio and fiona, and the models, which the package downloads on first use; the package itself is read from the checkout.
 
 ## License
 
