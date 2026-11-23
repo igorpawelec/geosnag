@@ -139,6 +139,10 @@ Every number in a README comes from a script in the repository; a figure is made
   and people look for them under Releases. A plugin zip or an installer is built and attached by a
   release workflow that triggers on the prefixed tag pattern; data files are attached by hand and
   their checksums compared with the manifest.
+- The three rules above hold for tags made in the repository. Tags carried over from the
+  repositories it was merged from stay as they came, some lightweight and most without a release:
+  they are history, kept so that an old version number still resolves to its commit, and they are
+  neither annotated after the fact nor given releases. A release that an old tag did have is kept.
 - A change of what a package computes is a new version of the package and of every plugin that
   bundles it. A change of addresses, README or marks is not, unless the address is one the
   released code uses (a download address, a help link).
